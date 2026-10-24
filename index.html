@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="tr" dir="ltr" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face-to-Face AI | Türkiye Marketplace & Adana Jobs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#f0fdf4', 500: '#10b981', 600: '#059669', 700: '#047857' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel { background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-card { background: rgba(31, 41, 55, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-brand-500 selection:text-white" id="bodyTheme">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center shadow-lg shadow-brand-500/30">
+                    <i class="fa-solid fa-brain-circuit text-white text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Face-to-Face AI</h1>
+                    <span class="text-xs text-brand-400 font-medium">Türkiye Marketplace & Adana</span>
+                </div>
+            </div>
+
+            <!-- Global Spectrum Themes & Controls -->
+            <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                <!-- Theme Switcher -->
+                <select id="themeSelector" onchange="changeTheme(this.value)" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-2 py-1.5 text-slate-300 focus:outline-none focus:border-brand-500">
+                    <option value="emerald">🟢 Crystal Emerald</option>
+                    <option value="sapphire">🔵 Royal Sapphire</option>
+                    <option value="gold">🟡 Solar Gold</option>
+                    <option value="magenta">🟣 Cyber Magenta</option>
+                    <option value="obsidian">⚫ Velvet Obsidian</option>
+                </select>
+
+                <!-- Language Toggle -->
+                <button onclick="toggleLanguage()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1 rtl:space-x-reverse">
+                    <i class="fa-solid fa-globe text-brand-400"></i>
+                    <span id="langBtnText">العربية</span>
+                </button>
+
+                <!-- Auth / Profile Button -->
+                <button onclick="openModal('authModal')" class="p-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-semibold shadow-md shadow-brand-600/20 transition-all">
+                    <i class="fa-solid fa-user"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 space-y-6 pb-24">
+        
+        <!-- Live Face-to-Face AI Banner -->
+        <section class="glass-card rounded-2xl p-6 relative overflow-hidden border border-brand-500/20 shadow-2xl">
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="space-y-2 text-center md:text-start rtl:md:text-right">
+                    <span class="px-3 py-1 bg-brand-500/20 text-brand-400 text-xs font-bold rounded-full uppercase tracking-wider border border-brand-500/30">Live AI Assistant</span>
+                    <h2 class="text-2xl font-extrabold text-white" id="aiBannerTitle">مساعد الذكاء الاصطناعي وجهاً لوجه</h2>
+                    <p class="text-slate-400 text-sm max-w-xl" id="aiBannerDesc">ابحث عن المنتجات، تفاوض مع التجار في تركيا، وقم بالترويج لخدماتك بلحظات عبر الصوت والصورة باللغتين العربية والتركية.</p>
+                </div>
+                <button onclick="startAIVoiceSession()" class="px-6 py-3 bg-gradient-to-r from-brand-600 to-emerald-500 hover:from-brand-500 hover:to-emerald-400 text-white font-bold rounded-xl shadow-lg shadow-brand-600/30 transition-all flex items-center space-x-2 rtl:space-x-reverse">
+                    <i class="fa-solid fa-video text-lg animate-pulse"></i>
+                    <span id="aiBtnText">بدء المحادثة المباشرة</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Adana Jobs & Facebook Group Banner -->
+        <section class="bg-gradient-to-r from-blue-900/40 via-indigo-900/40 to-slate-900 border border-blue-500/30 rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                <div class="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center text-white text-xl shadow-lg shadow-blue-500/30 flex-shrink-0">
+                    <i class="fa-brands fa-facebook-f"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white text-base">فرص عمل في مدينة أضنة التركية (Adana İş İlanları)</h3>
+                    <p class="text-xs text-blue-300">تفاعل الآن وانضم إلى مجموعتنا الرسمية على الفيسبوك لمتابعة أحدث الوظائف والفرص في أضنة.</p>
+                </div>
+            </div>
+            <a href="https://www.facebook.com" target="_blank" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-md transition-all flex items-center space-x-2 rtl:space-x-reverse flex-shrink-0">
+                <i class="fa-solid fa-external-link-alt"></i>
+                <span>زيارة المجموعة</span>
+            </a>
+        </section>
+
+        <!-- Categories Grid -->
+        <section>
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-bold text-lg text-white" id="categoriesTitle">الأقسام والخدمات</h3>
+                <span class="text-xs text-slate-400">₺ TRY</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                <button onclick="filterCategory('all')" class="p-4 rounded-xl glass-card hover:border-brand-500 transition-all text-center group">
+                    <i class="fa-solid fa-border-all text-xl text-brand-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <span class="block text-xs font-semibold text-slate-200" id="catAll">الكل</span>
+                </button>
+                <button onclick="filterCategory('phones')" class="p-4 rounded-xl glass-card hover:border-brand-500 transition-all text-center group">
+                    <i class="fa-solid fa-mobile-screen text-xl text-brand-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <span class="block text-xs font-semibold text-slate-200" id="catPhones">هواتف</span>
+                </button>
+                <button onclick="filterCategory('cars')" class="p-4 rounded-xl glass-card hover:border-brand-500 transition-all text-center group">
+                    <i class="fa-solid fa-car text-xl text-brand-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <span class="block text-xs font-semibold text-slate-200" id="catCars">سيارات</span>
+                </button>
+                <button onclick="filterCategory('construction')" class="p-4 rounded-xl glass-card hover:border-brand-500 transition-all text-center group">
+                    <i class="fa-solid fa-helmet-safety text-xl text-brand-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <span class="block text-xs font-semibold text-slate-200" id="catConst">بناء</span>
+                </button>
+                <button onclick="filterCategory('computers')" class="p-4 rounded-xl glass-card hover:border-brand-500 transition-all text-center group">
+                    <i class="fa-solid fa-laptop text-xl text-brand-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <span class="block text-xs font-semibold text-slate-200" id="catComp">كمبيوترات</span>
+                </button>
+                <button onclick="filterCategory('jobs')" class="p-4 rounded-xl glass-card hover:border-blue-500 transition-all text-center group">
+                    <i class="fa-solid fa-briefcase text-xl text-blue-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <span class="block text-xs font-semibold text-slate-200" id="catJobs">وظائف أضنة</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Marketplace Listings -->
+        <section>
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-bold text-lg text-white" id="listingsTitle">الإعلانات المعروضة في تركيا</h3>
+                <button onclick="openModal('addListingModal')" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold rounded-lg shadow transition-all flex items-center space-x-1 rtl:space-x-reverse">
+                    <i class="fa-solid fa-plus"></i>
+                    <span id="addListingBtn">إعلان جديد</span>
+                </button>
+            </div>
+            <div id="listingsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <!-- Dynamic Listings Rendered Here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation Bar (Mobile App Style) -->
+    <nav class="fixed bottom-0 left-0 right-0 glass-panel border-t border-slate-800 px-6 py-2.5 z-40 flex items-center justify-around">
+        <button onclick="switchTab('home')" class="flex flex-col items-center text-brand-400 space-y-1">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[10px] font-medium" id="navHome">الرئيسية</span>
+        </button>
+        <button onclick="openChatModal()" class="flex flex-col items-center text-slate-400 hover:text-brand-400 space-y-1">
+            <i class="fa-solid fa-comments text-lg"></i>
+            <span class="text-[10px] font-medium" id="navChat">محادثة</span>
+        </button>
+        <button onclick="openModal('addListingModal')" class="flex flex-col items-center text-slate-400 hover:text-brand-400 space-y-1">
+            <i class="fa-solid fa-circle-plus text-lg text-brand-500"></i>
+            <span class="text-[10px] font-medium" id="navPost">نشر</span>
+        </button>
+        <button onclick="openModal('panelModal')" class="flex flex-col items-center text-slate-400 hover:text-brand-400 space-y-1">
+            <i class="fa-solid fa-chart-pie text-lg"></i>
+            <span class="text-[10px] font-medium" id="navPanel">لوحة التحكم</span>
+        </button>
+    </nav>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md rounded-2xl p-6 relative border border-slate-700 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-lg text-white" id="authTitle">تسجيل الدخول / إنشاء حساب</h3>
+                <button onclick="closeModal('authModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1" id="labelUsername">اسم المستخدم</label>
+                    <input type="text" id="regUsername" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500" placeholder="Stan...">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1" id="labelPhone">رقم الهاتف (Türkiye +90)</label>
+                    <input type="tel" id="regPhone" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500" placeholder="555 000 0000">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1" id="labelEmail">البريد الإلكتروني</label>
+                    <input type="email" id="regEmail" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500" placeholder="name@example.com">
+                </div>
+                <button onclick="handleAuth()" class="w-full py-3 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl text-sm shadow-lg transition-all" id="authSubmitBtn">متابعة الدخول</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Listing Modal -->
+    <div id="addListingModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md rounded-2xl p-6 relative border border-slate-700 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-lg text-white" id="modalAddTitle">إضافة إعلان جديد</h3>
+                <button onclick="closeModal('addListingModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-3">
+                <input type="text" id="itemTitle" placeholder="عنوان الإعلان (مثلاً: iPhone 15 Pro)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                <select id="itemCategory" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-300 focus:outline-none focus:border-brand-500">
+                    <option value="phones">هواتف / Telefonlar</option>
+                    <option value="cars">سيارات / Arabalar</option>
+                    <option value="construction">بناء / İnşaat</option>
+                    <option value="computers">كمبيوترات / Bilgisayarlar</option>
+                    <option value="jobs">وظائف أضنة / Adana İş İlanları</option>
+                </select>
+                <input type="number" id="itemPrice" placeholder="السعر بالليرة التركية (₺)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                <textarea id="itemDesc" placeholder="تفاصيل الإعلان..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 h-24"></textarea>
+                <button onclick="addNewListing()" class="w-full py-3 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl text-sm shadow-lg transition-all" id="modalPublishBtn">نشر الإعلان</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Chat & Auto-Translation Modal -->
+    <div id="chatModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-lg rounded-2xl p-6 relative border border-slate-700 space-y-4 h-[500px] flex flex-col">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                    <div class="w-3 h-3 bg-brand-500 rounded-full animate-ping"></div>
+                    <h3 class="font-bold text-base text-white" id="chatHeaderTitle">المحادثة والترجمة الفورية (Türkçe - العربية)</h3>
+                </div>
+                <button onclick="closeModal('chatModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div id="chatMessages" class="flex-1 overflow-y-auto space-y-3 pr-2 text-sm">
+                <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 max-w-[80%]">
+                    <span class="text-xs text-brand-400 block font-semibold">AI Translator</span>
+                    <p class="text-slate-200">Merhabalar! Hoş geldiniz. Nasıl yardımcı olabilirim? / أهلاً بك! كيف يمكنني مساعدتك اليوم؟</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 rtl:space-x-reverse pt-2 border-t border-slate-800">
+                <input type="text" id="chatInput" placeholder="اكتب رسالتك هنا..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                <button onclick="sendChatMessage()" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-sm font-semibold shadow transition-all"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Merchant Dashboard Panel Modal -->
+    <div id="panelModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md rounded-2xl p-6 relative border border-slate-700 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-lg text-white" id="panelTitle">لوحة تحكم التاجر</h3>
+                <button onclick="closeModal('panelModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-center">
+                    <span class="text-xs text-slate-400 block">إجمالي الإعلانات</span>
+                    <span class="text-2xl font-extrabold text-brand-400" id="statListingsCount">3</span>
+                </div>
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 text-center">
+                    <span class="text-xs text-slate-400 block">المشاهدات</span>
+                    <span class="text-2xl font-extrabold text-emerald-400">1,240</span>
+                </div>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
+                <h4 class="font-semibold text-xs text-slate-300" id="panelQuickActions">الإجراءات السريعة</h4>
+                <button onclick="openModal('addListingModal'); closeModal('panelModal');" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-xs text-white rounded-lg font-medium transition-all text-start px-3 rtl:text-right">
+                    <i class="fa-solid fa-plus text-brand-400 me-2"></i> إضافة إعلان جديد في أضنة وتركيا
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        let currentLang = 'ar';
+        let currentTheme = 'emerald';
+        let currentFilter = 'all';
+
+        const translations = {
+            ar: {
+                langBtnText: "العربية",
+                aiBannerTitle: "مساعد الذكاء الاصطناعي وجهاً لوجه",
+                aiBannerDesc: "ابحث عن المنتجات، تفاوض مع التجار في تركيا، وقم بالترويج لخدماتك بلحظات عبر الصوت والصورة باللغتين العربية والتركية.",
+                aiBtnText: "بدء المحادثة المباشرة",
+                categoriesTitle: "الأقسام والخدمات",
+                catAll: "الكل",
+                catPhones: "هواتف",
+                catCars: "سيارات",
+                catConst: "بناء",
+                catComp: "كمبيوترات",
+                catJobs: "وظائف أضنة",
+                listingsTitle: "الإعلانات المعروضة في تركيا",
+                addListingBtn: "إعلان جديد",
+                navHome: "الرئيسية",
+                navChat: "محادثة",
+                navPost: "نشر",
+                navPanel: "لوحة التحكم",
+                authTitle: "تسجيل الدخول / إنشاء حساب",
+                labelUsername: "اسم المستخدم",
+                labelPhone: "رقم الهاتف (Türkiye +90)",
+                labelEmail: "البريد الإلكتروني",
+                authSubmitBtn: "متابعة الدخول",
+                modalAddTitle: "إضافة إعلان جديد",
+                modalPublishBtn: "نشر الإعلان",
+                chatHeaderTitle: "المحادثة والترجمة الفورية (Türkçe - العربية)",
+                panelTitle: "لوحة تحكم التاجر",
+                panelQuickActions: "الإجراءات السريعة"
+            },
+            tr: {
+                langBtnText: "Türkçe",
+                aiBannerTitle: "Yüz Yüze Yapay Zeka Asistanı",
+                aiBannerDesc: "Türkiye'deki tüccarlarla müzakere edin, ürün arayın ve sesli-görüntülü yapay zeka ile anında destek alın.",
+                aiBtnText: "Canlı Sohbeti Başlat",
+                categoriesTitle: "Kategoriler ve Hizmetler",
+                catAll: "Tümü",
+                catPhones: "Telefonlar",
+                catCars: "Arabalar",
+                catConst: "İnşaat",
+                catComp: "Bilgisayarlar",
+                catJobs: "Adana İş",
+                listingsTitle: "Türkiye'deki İlanlar",
+                addListingBtn: "Yeni İlan",
+                navHome: "Ana Sayfa",
+                navChat: "Sohbet",
+                navPost: "Yayınla",
+                navPanel: "Panel",
+                authTitle: "Giriş Yap / Kayıt Ol",
+                labelUsername: "Kullanıcı Adı",
+                labelPhone: "Telefon Numarası (Türkiye +90)",
+                labelEmail: "E-posta",
+                authSubmitBtn: "Devam Et",
+                modalAddTitle: "Yeni İlan Ekle",
+                modalPublishBtn: "İlanı Yayınla",
+                chatHeaderTitle: "Canlı Sohbet ve Anlık Çeviri (Türkçe - Arapça)",
+                panelTitle: "Tüccar Paneli",
+                panelQuickActions: "Hızlı İşlemler"
+            }
+        };
+
+        let listings = [
+            { id: 1, title: "iPhone 15 Pro Max 256GB", category: "phones", price: 65000, desc: "إسطنبول، ضمان رسمي، نظيف جداً / Temiz, garantili.", user: "Stan" },
+            { id: 2, title: "Renault Megane 2022 Model", category: "cars", price: 850000, desc: "أضنة، ترابيز نظيفة، بدون بويا / Adana, boyasız temiz araç.", user: "Ahmet" },
+            { id: 3, title: "مطلوب معلم بلاط في أضنة / Adana Usta", category: "jobs", price: 1200, desc: "مجموعة فرص عمل أضنة - مطلوب عمال صيانة وبلاط.", user: "AdanaJobs" }
+        ];
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'tr' : 'ar';
+            const htmlRoot = document.getElementById('htmlRoot');
+            htmlRoot.setAttribute('lang', currentLang);
+            htmlRoot.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+            
+            const t = translations[currentLang];
+            for (let key in t) {
+                const el = document.getElementById(key);
+                if (el) el.innerText = t[key];
+            }
+            renderListings();
+        }
+
+        function changeTheme(theme) {
+            currentTheme = theme;
+            const body = document.getElementById('bodyTheme');
+            if (theme === 'sapphire') body.className = "bg-slate-950 text-blue-100 font-sans min-h-screen flex flex-col";
+            else if (theme === 'gold') body.className = "bg-slate-950 text-amber-100 font-sans min-h-screen flex flex-col";
+            else if (theme === 'magenta') body.className = "bg-slate-950 text-fuchsia-100 font-sans min-h-screen flex flex-col";
+            else if (theme === 'obsidian') body.className = "bg-black text-slate-200 font-sans min-h-screen flex flex-col";
+            else body.className = "bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col";
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function openChatModal() {
+            openModal('chatModal');
+        }
+
+        function filterCategory(cat) {
+            currentFilter = cat;
+            renderListings();
+        }
+
+        function renderListings() {
+            const container = document.getElementById('listingsContainer');
+            container.innerHTML = '';
+            
+            const filtered = currentFilter === 'all' ? listings : listings.filter(item => item.category === currentFilter);
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500 text-sm">لا توجد إعلانات في هذا القسم حالياً.</div>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "glass-card rounded-2xl p-4 flex flex-col justify-between border border-slate-800 hover:border-brand-500/50 transition-all shadow-lg";
+                card.innerHTML = `
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 bg-brand-500/20 text-brand-400 text-[10px] font-bold rounded-md uppercase">${item.category}</span>
+                            <span class="text-xs font-bold text-emerald-400">${item.price.toLocaleString()} ₺</span>
+                        </div>
+                        <h4 class="font-bold text-base text-white">${item.title}</h4>
+                        <p class="text-xs text-slate-400 line-clamp-2">${item.desc}</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between">
+                        <span class="text-[11px] text-slate-500"><i class="fa-solid fa-user me-1"></i>${item.user}</span>
+                        <button onclick="openChatModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-white rounded-lg transition-all">
+                            <i class="fa-solid fa-comment-dots text-brand-400 me-1"></i> تواصل
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            document.getElementById('statListingsCount').innerText = listings.length;
+        }
+
+        function addNewListing() {
+            const title = document.getElementById('itemTitle').value;
+            const category = document.getElementById('itemCategory').value;
+            const price = parseFloat(document.getElementById('itemPrice').value) || 0;
+            const desc = document.getElementById('itemDesc').value;
+
+            if (!title) {
+                alert("يرجى إدخال عنوان الإعلان");
+                return;
+            }
+
+            listings.unshift({ id: Date.now(), title, category, price, desc, user: "Stan" });
+            renderListings();
+            closeModal('addListingModal');
+            document.getElementById('itemTitle').value = '';
+            document.getElementById('itemPrice').value = '';
+            document.getElementById('itemDesc').value = '';
+        }
+
+        function handleAuth() {
+            const user = document.getElementById('regUsername').value;
+            if (user) {
+                alert(`أهلاً بك يا ${user}! تم حفظ بياناتك بنجاح.`);
+                closeModal('authModal');
+            } else {
+                alert("يرجى إدخال اسم المستخدم");
+            }
+        }
+
+        function startAIVoiceSession() {
+            alert("جاري الاتصال بمساعد الذكاء الاصطناعي وجهاً لوجه (Face-to-Face AI)... المتصفح سيقوم بتفعيل الصوت والصورة.");
+            openChatModal();
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const val = input.value.trim();
+            if (!val) return;
+
+            const chatMessages = document.getElementById('chatMessages');
+            const userMsg = document.createElement('div');
+            userMsg.className = "p-3 rounded-xl bg-brand-600/20 border border-brand-500/30 max-w-[80%] ms-auto text-end";
+            userMsg.innerHTML = `<span class="text-xs text-brand-300 block font-semibold">Stan</span><p class="text-slate-100">${val}</p>`;
+            chatMessages.appendChild(userMsg);
+            input.value = '';
+
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.className = "p-3 rounded-xl bg-slate-900/90 border border-slate-800 max-w-[80%]";
+                aiMsg.innerHTML = `<span class="text-xs text-brand-400 block font-semibold">AI Translator</span><p class="text-slate-200">Çeviri/رد: ${val} (تمت الترجمة والفهم بنجاح)</p>`;
+                chatMessages.appendChild(aiMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 800);
+        }
+
+        // Initialize App on Load
+        window.onload = function() {
+            renderListings();
+        };
+    </script>
+</body>
+</html>
