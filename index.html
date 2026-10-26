@@ -1,139 +1,1012 @@
 <!DOCTYPE html>
-<html lang="tr" dir="ltr" id="htmlRoot">
+<html lang="tr" dir="ltr" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Face-to-Face AI | Türkiye Marketplace</title>
+    <title>Face-to-Face AI - Global Spectrum & Smart Promotion Hub</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Plus Jakarta Sans Font -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
-                    colors: {
-                        brand: { 50: '#f0fdf4', 500: '#10b981', 600: '#059669', 700: '#047857' }
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
                     }
                 }
             }
         }
+
+        // --- GLOBAL SCOPE HOISTING FOR ALL EVENT HANDLERS ---
+        window.currentThemeKey = 'emerald';
+        window.currentUser = null;
+        window.currentLang = 'tr';
+        window.currentCategory = 'all';
+        window.aiSessionActive = false;
+
+        // Global theme spectrum configurations representing all colors of the world
+        const themes = {
+            emerald: { name: 'Crystal Emerald', p500: '#10b981', p600: '#059669', bg: '#090d16', card: '#111827', border: '#1f2937' },
+            sapphire: { name: 'Royal Sapphire', p500: '#3b82f6', p600: '#2563eb', bg: '#080c14', card: '#0f172a', border: '#1e293b' },
+            gold: { name: 'Solar Gold', p500: '#f59e0b', p600: '#d97706', bg: '#0d0b07', card: '#18150d', border: '#292316' },
+            neon: { name: 'Cyber Magenta', p500: '#ec4899', p600: '#db2777', bg: '#0e080d', card: '#1c101b', border: '#311b30' },
+            obsidian: { name: 'Velvet Obsidian', p500: '#8b5cf6', p600: '#7c3aed', bg: '#0a090e', card: '#14121f', border: '#232036' },
+            ruby: { name: 'Crimson Ruby', p500: '#ef4444', p600: '#dc2626', bg: '#0f0808', card: '#1a1010', border: '#2d1818' },
+            cyan: { name: 'Neon Cyan', p500: '#06b6d4', p600: '#0891b2', bg: '#060d10', card: '#0e181c', border: '#162830' }
+        };
+
+        window.applyTheme = function(key) {
+            window.currentThemeKey = key;
+            const t = themes[key];
+            const root = document.documentElement;
+            root.style.setProperty('--theme-500', t.p500);
+            root.style.setProperty('--theme-600', t.p600);
+            
+            const badge = document.getElementById('theme-name-display');
+            if (badge) badge.innerText = t.name;
+
+            document.querySelectorAll('.theme-dot').forEach(dot => {
+                if (dot.getAttribute('data-theme') === key) {
+                    dot.classList.add('ring-2', 'ring-white', 'scale-110');
+                } else {
+                    dot.classList.remove('ring-2', 'ring-white', 'scale-110');
+                }
+            });
+            if (typeof window.renderListings === 'function' && window.listingsData) {
+                window.renderListings(window.listingsData);
+            }
+            if (typeof window.renderCategories === 'function') {
+                window.renderCategories();
+            }
+        };
+
+        // Comprehensive bilingual dictionary for 100% full localization (TR & AR)
+        const translations = {
+            tr: {
+                brandSub: "Yüz Yüze Yapay Zeka Asistanı",
+                searchPlaceholder: "Telefon, araç, inşaat, yapay zeka ara...",
+                categoriesTitle: "Kategoriler",
+                all: "Tümü",
+                phones: "Telefon",
+                cars: "Oto & Araç",
+                construction: "İnşaat",
+                computers: "Bilgisayar",
+                aiChat: "AI Yüz Yüze",
+                misc: "Çeşitli",
+                featuredBadge: "Yapay Zeka Destekli",
+                featuredTitle: "Yüz Yüze Akıllı Tanıtım ve Satış",
+                featuredDesc: "Ürününüzü yapay zeka ile ₺ cinsinden anında listeleyin ve satın.",
+                postAdBtn: "İlan Ekle",
+                currentListings: "Aktif İlanlar",
+                loadingListings: "Yükleniyor...",
+                homeNav: "Ana Sayfa",
+                aiNav: "Yüz Yüze AI",
+                postNav: "İlan Ver",
+                favNav: "Favoriler",
+                profileNav: "Profil",
+                chatNav: "Sohbet",
+                dashboardNav: "Panel",
+                postModalTitle: "Yeni İlan Ekle",
+                adTitleLabel: "Ürün Başlığı",
+                adTitlePlaceholder: "Örn: iPhone 15 Pro / Ford Focus",
+                categoryLabel: "Kategori",
+                priceLabel: "Fiyat (₺)",
+                locationLabel: "Konum / Şehir",
+                locationPlaceholder: "İstanbul, Kadıköy",
+                imageLabel: "Görsel Bağlantısı (URL)",
+                submitAdBtn: "İlanı Yayınla",
+                cityModalTitle: "Konum Seçin",
+                closeText: "Kapat",
+                successTitle: "İşlem Başarılı",
+                successText: "İşleminiz başarıyla gerçekleştirildi.",
+                okText: "Tamam",
+                emptyFav: "Favori ilanınız bulunmuyor.",
+                profileDesc: "Doğrulanmış Esnaf ve Yapay Zeka Asistanı Hesabı.",
+                itemNotFound: "Aradığınız kriterlere uygun ilan bulunamadı.",
+                detailsTitle: "İlan Detayı",
+                phoneCat: "Telefon",
+                carCat: "Oto",
+                constCat: "İnşaat",
+                compCat: "Bilgisayar",
+                aiCat: "Yüz Yüze AI",
+                miscCat: "Çeşitli",
+                activeListingsText: "İlan",
+                generalCat: "Genel",
+                aiHeaderTitle: "Canlı Yüz Yüze Yapay Zeka Asistanı",
+                aiHeaderDesc: "Kamera ve ses ile doğrudan yapay zeka ile sohbet edin, ürün arayın ve tavsiye alın.",
+                startAiBtn: "Yüz Yüze Görüşmeyi Başlat",
+                stopAiBtn: "Görüşmeyi Sonlandır",
+                aiStatusReady: "Hazır - Kamerayı veya Sesi Başlatın",
+                authModalTitle: "Hesap Girişi / Kayıt",
+                usernameLabel: "Kullanıcı Adı",
+                usernamePlaceholder: "Adınız Soyadınız",
+                emailLabel: "E-posta Adresi",
+                emailPlaceholder: "ornek@mail.com",
+                phoneLabel: "Telefon Numarası",
+                phonePlaceholder: "0532 000 00 00",
+                authBtn: "Giriş Yap / Kaydol",
+                chatTitle: "Anlık Çeviri Sohbeti",
+                chatPlaceholder: "Mesajınızı yazın (Otomatik Çeviri)...",
+                sendBtn: "Gönder",
+                dashTitle: "Esnaf / Satıcı Paneli",
+                totalViews: "Toplam Görüntülenme",
+                activeAdsCount: "Aktif İlanlarım",
+                inquiriesCount: "Müşteri Talepleri"
+            },
+            ar: {
+                brandSub: "مساعد الذكاء الاصطناعي وجهاً لوجه",
+                searchPlaceholder: "ابحث عن هاتف، سيارة، مواد بناء، ذكاء اصطناعي...",
+                categoriesTitle: "التصنيفات",
+                all: "الكل",
+                phones: "الهواتف",
+                cars: "السيارات",
+                construction: "المقاولات",
+                computers: "الكمبيوتر",
+                aiChat: "محادثة AI",
+                misc: "متفرقات",
+                featuredBadge: "مدعوم بالذكاء الاصطناعي",
+                featuredTitle: "ترويج وبيع ذكي وجهاً لوجه",
+                featuredDesc: "اعرض منتجك بالليرة التركية مع مساعد الذكاء الاصطناعي الفوري.",
+                postAdBtn: "إضافة إعلان",
+                currentListings: "الإعلانات النشطة",
+                loadingListings: "جاري التحميل...",
+                homeNav: "الرئيسية",
+                aiNav: "ذكاء اصطناعي",
+                postNav: "أضف إعلان",
+                favNav: "المفضلة",
+                profileNav: "حسابي",
+                chatNav: "محادثة",
+                dashboardNav: "لوحة التحكم",
+                postModalTitle: "إضافة إعلان جديد",
+                adTitleLabel: "عنوان المنتج",
+                adTitlePlaceholder: "مثال: iPhone 15 Pro أو سيارة",
+                categoryLabel: "التصنيف",
+                priceLabel: "السعر (₺)",
+                locationLabel: "المدينة / الموقع",
+                locationPlaceholder: "إسطنبول، كاديكوي",
+                imageLabel: "رابط الصورة (URL)",
+                submitAdBtn: "نشر الإعلان",
+                cityModalTitle: "اختر الموقع",
+                closeText: "إغلاق",
+                successTitle: "عملية ناجحة",
+                successText: "تمت معالجة طلبك بنجاح.",
+                okText: "حسناً",
+                emptyFav: "قائمة المفضلة فارغة.",
+                profileDesc: "حساب تاجر ومساعد ذكاء اصطناعي موثق.",
+                itemNotFound: "لا توجد إعلانات متاحة تطابق بحثك.",
+                detailsTitle: "تفاصيل الإعلان",
+                phoneCat: "هواتف",
+                carCat: "سيارات",
+                constCat: "مقاولات",
+                compCat: "كمبيوتر",
+                aiCat: "ذكاء اصطناعي",
+                miscCat: "متفرقات",
+                activeListingsText: "إعلان",
+                generalCat: "عام",
+                aiHeaderTitle: "مساعد الذكاء الاصطناعي الحي وجهاً لوجه",
+                aiHeaderDesc: "تحدث مع الذكاء الاصطناعي مباشرة بالصوت والصورة، وابحث عن المنتجات أو اطلب استشارة.",
+                startAiBtn: "بدء المحادثة المرئية",
+                stopAiBtn: "إنهاء المحادثة",
+                aiStatusReady: "جاهز - قم بتشغيل الكاميرا أو الصوت",
+                authModalTitle: "تسجيل الدخول / التسجيل",
+                usernameLabel: "اسم المستخدم",
+                usernamePlaceholder: "اسمك الكامل",
+                emailLabel: "البريد الإلكتروني",
+                emailPlaceholder: "example@mail.com",
+                phoneLabel: "رقم الهاتف",
+                phonePlaceholder: "0532 000 00 00",
+                authBtn: "دخول / تسجيل",
+                chatTitle: "دردشة فورية مع الترجمة الآلية",
+                chatPlaceholder: "اكتب رسالتك هنا (ترجمة تلقائية)...",
+                sendBtn: "إرسال",
+                dashTitle: "لوحة تحكم التاجر",
+                totalViews: "إجمالي المشاهدات",
+                activeAdsCount: "إعلاناتي النشطة",
+                inquiriesCount: "طلبات الزبائن"
+            }
+        };
+
+        window.listingsData = [
+            {
+                id: 1,
+                title: "iPhone 15 Pro Max 256GB - Kusursuz",
+                category: "phones",
+                price: 68500,
+                location: "İstanbul, Kadıköy",
+                image: "https://placehold.co/400x300/0f172a/10b981?text=iPhone+15+Pro",
+                views: 1240
+            },
+            {
+                id: 2,
+                title: "2022 Ford Focus 1.5 Ecoblue Trend X",
+                category: "cars",
+                price: 940000,
+                location: "Ankara, Çankaya",
+                image: "https://placehold.co/400x300/0f172a/059669?text=Ford+Focus",
+                views: 3120
+            },
+            {
+                id: 3,
+                title: "Komple İnşaat ve Tadilat Ekipman Seti",
+                category: "construction",
+                price: 18500,
+                location: "Bursa, Nilüfer",
+                image: "https://placehold.co/400x300/0f172a/34d399?text=Insaat+Seti",
+                views: 890
+            },
+            {
+                id: 4,
+                title: "Asus ROG Strix Gaming Laptop RTX 4080",
+                category: "computers",
+                price: 64000,
+                location: "İzmir, Bornova",
+                image: "https://placehold.co/400x300/0f172a/047857?text=Gaming+Laptop",
+                views: 1560
+            },
+            {
+                id: 5,
+                title: "Face-to-Face AI Asistan Danışmanlık",
+                category: "aiChat",
+                price: 1500,
+                location: "İstanbul, Şişli",
+                image: "https://placehold.co/400x300/0f172a/8b5cf6?text=Face-to-Face+AI",
+                views: 4500
+            }
+        ];
+
+        window.chatMessages = [
+            { sender: 'Esnaf Ahmet', text: 'Merhaba, ürün hakkında bilgi alabilir miyim?', translated: 'مرحباً، هل يمكنني الحصول على معلومات حول المنتج؟', time: '10:30' },
+            { sender: 'Müşteri', text: 'Tabii ki, hangi konuda yardımcı olabilirim?', translated: 'بالطبع، في أي شيء يمكنني مساعدتك؟', time: '10:31' }
+        ];
+
+        function formatCategoryName(cat) {
+            switch(cat) {
+                case 'phones': return translations[window.currentLang].phoneCat;
+                case 'cars': return translations[window.currentLang].carCat;
+                case 'construction': return translations[window.currentLang].constCat;
+                case 'computers': return translations[window.currentLang].compCat;
+                case 'aiChat': return translations[window.currentLang].aiCat;
+                case 'misc': return translations[window.currentLang].miscCat;
+                default: return translations[window.currentLang].generalCat;
+            }
+        }
+
+        window.renderCategories = function() {
+            const container = document.getElementById('categories-container');
+            if(!container) return;
+            const t = translations[window.currentLang];
+            const cats = [
+                { id: 'all', name: t.all, icon: 'fa-border-all' },
+                { id: 'phones', name: t.phones, icon: 'fa-mobile-screen' },
+                { id: 'cars', name: t.cars, icon: 'fa-car' },
+                { id: 'construction', name: t.construction, icon: 'fa-building' },
+                { id: 'computers', name: t.computers, icon: 'fa-laptop' },
+                { id: 'aiChat', name: t.aiChat, icon: 'fa-brain' },
+                { id: 'misc', name: t.misc, icon: 'fa-box-archive' }
+            ];
+
+            container.innerHTML = '';
+            cats.forEach(c => {
+                const isActive = window.currentCategory === c.id;
+                const btn = document.createElement('button');
+                btn.onclick = () => window.filterCategory(c.id);
+                btn.className = `category-btn flex flex-col items-center justify-center min-w-[76px] h-20 rounded-2xl shadow-md transition-all flex-shrink-0 active:scale-95 font-bold ${
+                    isActive ? 'bg-[var(--theme-500)] text-slate-950 shadow-[var(--theme-500)]/30' : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800'
+                }`;
+                btn.innerHTML = `
+                    <i class="fa-solid ${c.icon} text-base mb-1.5 ${isActive ? 'text-slate-950' : 'text-[var(--theme-500)]'}"></i>
+                    <span class="text-[11px]">${c.name}</span>
+                `;
+                container.appendChild(btn);
+            });
+        };
+
+        window.renderListings = function(items) {
+            const grid = document.getElementById('listings-grid');
+            const countEl = document.getElementById('listing-count');
+            if (!grid || !countEl) return;
+            grid.innerHTML = '';
+            countEl.innerText = `${items.length} ${translations[window.currentLang].activeListingsText}`;
+
+            if (items.length === 0) {
+                grid.innerHTML = `<div class="col-span-2 text-center py-10 text-slate-400 text-xs">${translations[window.currentLang].itemNotFound}</div>`;
+                return;
+            }
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900 border border-slate-800 hover:border-[var(--theme-500)] rounded-2xl overflow-hidden transition-all flex flex-col justify-between shadow-lg";
+                card.innerHTML = `
+                    <div>
+                        <div class="relative h-36 bg-slate-950 overflow-hidden">
+                            <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.src='https://placehold.co/400x300/0f172a/10b981?text=FaceToFaceAI'">
+                            <span class="absolute top-2 right-2 bg-slate-900/90 backdrop-blur-md text-[var(--theme-500)] border border-slate-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold rtl:right-auto rtl:left-2">
+                                ${formatCategoryName(item.category)}
+                            </span>
+                        </div>
+                        <div class="p-3">
+                            <h4 class="font-semibold text-xs text-white line-clamp-2 mb-1">${item.title}</h4>
+                            <p class="text-[10px] text-slate-400"><i class="fa-solid fa-location-dot ml-1 rtl:ml-0 rtl:mr-1 text-[var(--theme-500)]"></i>${item.location}</p>
+                        </div>
+                    </div>
+                    <div class="p-3 pt-0 flex items-center justify-between mt-2">
+                        <span class="font-extrabold text-sm text-[var(--theme-500)]">${item.price.toLocaleString('tr-TR')} ₺</span>
+                        <div class="flex space-x-1.5 rtl:space-x-reverse">
+                            <button onclick="window.openChatModal()" class="w-7 h-7 rounded-xl bg-slate-800 hover:bg-[var(--theme-500)] hover:text-slate-950 text-slate-300 flex items-center justify-center transition-colors" title="Chat">
+                                <i class="fa-solid fa-comments text-xs"></i>
+                            </button>
+                            <button onclick="window.showAlertMessage('${translations[window.currentLang].detailsTitle}', '${item.title} - ${item.price.toLocaleString(\'tr-TR\')} ₺')" class="w-7 h-7 rounded-xl bg-slate-800 hover:bg-[var(--theme-500)] hover:text-slate-950 text-slate-300 flex items-center justify-center transition-colors">
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        };
+
+        window.renderChatMessages = function() {
+            const container = document.getElementById('chat-messages-container');
+            if (!container) return;
+            container.innerHTML = '';
+            window.chatMessages.forEach(m => {
+                const div = document.createElement('div');
+                div.className = "bg-slate-950 border border-slate-800 p-3 rounded-2xl";
+                div.innerHTML = `
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[11px] font-bold text-[var(--theme-500)]">${m.sender}</span>
+                        <span class="text-[9px] text-slate-500">${m.time}</span>
+                    </div>
+                    <p class="text-xs text-white">${m.text}</p>
+                    <div class="mt-1 pt-1 border-t border-slate-900 text-[11px] text-teal-400 italic">
+                        <i class="fa-solid fa-language text-[10px] mr-1"></i> ${m.translated}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            container.scrollTop = container.scrollHeight;
+        };
+
+        window.sendChatMessage = function(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            if (!input || !input.value.trim()) return;
+            const text = input.value.trim();
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            const translated = window.currentLang === 'tr' ? `[Arnavutça/Arapça Çeviri]: ${text}` : `[Türkçe Çeviri]: ${text}`;
+
+            window.chatMessages.push({
+                sender: window.currentUser ? window.currentUser.username : (window.currentLang === 'tr' ? 'Misafir Kullanıcı' : 'مستخدم ضيف'),
+                text,
+                translated,
+                time
+            });
+            input.value = '';
+            window.renderChatMessages();
+        };
+
+        window.toggleLanguage = function() {
+            window.currentLang = window.currentLang === 'tr' ? 'ar' : 'tr';
+            const htmlEl = document.documentElement;
+            htmlEl.setAttribute('dir', window.currentLang === 'ar' ? 'rtl' : 'ltr');
+            htmlEl.setAttribute('lang', window.currentLang);
+            
+            const langBtnText = document.getElementById('lang-btn-text');
+            if (langBtnText) langBtnText.innerText = window.currentLang === 'tr' ? 'AR' : 'TR';
+
+            const brandSub = document.getElementById('brand-sub');
+            if (brandSub) brandSub.innerText = translations[window.currentLang].brandSub;
+
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) searchInput.placeholder = translations[window.currentLang].searchPlaceholder;
+
+            const catTitle = document.getElementById('cat-title');
+            if (catTitle) catTitle.innerText = translations[window.currentLang].categoriesTitle;
+
+            const featBadge = document.getElementById('feat-badge');
+            if (featBadge) featBadge.innerText = translations[window.currentLang].featuredBadge;
+
+            const featTitle = document.getElementById('feat-title');
+            if (featTitle) featTitle.innerText = translations[window.currentLang].featuredTitle;
+
+            const featDesc = document.getElementById('feat-desc');
+            if (featDesc) featDesc.innerText = translations[window.currentLang].featuredDesc;
+
+            const listingsTitle = document.getElementById('listings-title');
+            if (listingsTitle) listingsTitle.innerText = translations[window.currentLang].currentListings;
+            
+            const navHome = document.getElementById('nav-home');
+            if (navHome) navHome.innerText = translations[window.currentLang].homeNav;
+
+            const navAi = document.getElementById('nav-ai');
+            if (navAi) navAi.innerText = translations[window.currentLang].aiNav;
+
+            const navPost = document.getElementById('nav-post');
+            if (navPost) navPost.innerText = translations[window.currentLang].postNav;
+
+            const navFav = document.getElementById('nav-fav');
+            if (navFav) navFav.innerText = translations[window.currentLang].favNav;
+
+            const navProfile = document.getElementById('nav-profile');
+            if (navProfile) navProfile.innerText = translations[window.currentLang].profileNav;
+
+            const navChat = document.getElementById('nav-chat');
+            if (navChat) navChat.innerText = translations[window.currentLang].chatNav;
+
+            const navDashboard = document.getElementById('nav-dashboard');
+            if (navDashboard) navDashboard.innerText = translations[window.currentLang].dashboardNav;
+
+            const aiHeaderTitle = document.getElementById('ai-header-title');
+            if (aiHeaderTitle) aiHeaderTitle.innerText = translations[window.currentLang].aiHeaderTitle;
+
+            const aiHeaderDesc = document.getElementById('ai-header-desc');
+            if (aiHeaderDesc) aiHeaderDesc.innerText = translations[window.currentLang].aiHeaderDesc;
+
+            const aiBtnText = document.getElementById('ai-btn-text');
+            if (aiBtnText) aiBtnText.innerText = window.aiSessionActive ? translations[window.currentLang].stopAiBtn : translations[window.currentLang].startAiBtn;
+
+            const modalPostTitle = document.getElementById('modal-post-title');
+            if (modalPostTitle) modalPostTitle.innerHTML = `<i class="fa-solid fa-plus-circle text-[var(--theme-500)]"></i><span>${translations[window.currentLang].postModalTitle}</span>`;
+
+            const lblTitle = document.getElementById('lbl-title');
+            if (lblTitle) lblTitle.innerText = translations[window.currentLang].adTitleLabel;
+
+            const adTitle = document.getElementById('ad-title');
+            if (adTitle) adTitle.placeholder = translations[window.currentLang].adTitlePlaceholder;
+
+            const lblCat = document.getElementById('lbl-cat');
+            if (lblCat) lblCat.innerText = translations[window.currentLang].categoryLabel;
+            
+            const catSelect = document.getElementById('ad-category');
+            if (catSelect && catSelect.options.length >= 6) {
+                catSelect.options[0].text = translations[window.currentLang].phoneCat;
+                catSelect.options[1].text = translations[window.currentLang].carCat;
+                catSelect.options[2].text = translations[window.currentLang].constCat;
+                catSelect.options[3].text = translations[window.currentLang].compCat;
+                catSelect.options[4].text = translations[window.currentLang].aiCat;
+                catSelect.options[5].text = translations[window.currentLang].miscCat;
+            }
+
+            const lblPrice = document.getElementById('lbl-price');
+            if (lblPrice) lblPrice.innerText = translations[window.currentLang].priceLabel;
+
+            const lblLoc = document.getElementById('lbl-loc');
+            if (lblLoc) lblLoc.innerText = translations[window.currentLang].locationLabel;
+
+            const adLocation = document.getElementById('ad-location');
+            if (adLocation) adLocation.placeholder = translations[window.currentLang].locationPlaceholder;
+
+            const lblImg = document.getElementById('lbl-img');
+            if (lblImg) lblImg.innerText = translations[window.currentLang].imageLabel;
+
+            const submitAdBtn = document.getElementById('submit-ad-btn');
+            if (submitAdBtn) submitAdBtn.innerText = translations[window.currentLang].submitAdBtn;
+
+            const cityModalTitle = document.getElementById('city-modal-title');
+            if (cityModalTitle) cityModalTitle.innerText = translations[window.currentLang].cityModalTitle;
+
+            const customModalOk = document.getElementById('custom-modal-ok');
+            if (customModalOk) customModalOk.innerText = translations[window.currentLang].okText;
+
+            const authTitle = document.getElementById('auth-modal-title-text');
+            if (authTitle) authTitle.innerText = translations[window.currentLang].authModalTitle;
+
+            const lblUser = document.getElementById('lbl-username');
+            if (lblUser) lblUser.innerText = translations[window.currentLang].usernameLabel;
+
+            const regUser = document.getElementById('reg-username');
+            if (regUser) regUser.placeholder = translations[window.currentLang].usernamePlaceholder;
+
+            const lblEmail = document.getElementById('lbl-email');
+            if (lblEmail) lblEmail.innerText = translations[window.currentLang].emailLabel;
+
+            const regEmail = document.getElementById('reg-email');
+            if (regEmail) regEmail.placeholder = translations[window.currentLang].emailPlaceholder;
+
+            const lblPhone = document.getElementById('lbl-phone');
+            if (lblPhone) lblPhone.innerText = translations[window.currentLang].phoneLabel;
+
+            const regPhone = document.getElementById('reg-phone');
+            if (regPhone) regPhone.placeholder = translations[window.currentLang].phonePlaceholder;
+
+            const authBtn = document.getElementById('auth-submit-btn');
+            if (authBtn) authBtn.innerText = translations[window.currentLang].authBtn;
+
+            const chatTitleEl = document.getElementById('chat-modal-title-text');
+            if (chatTitleEl) chatTitleEl.innerText = translations[window.currentLang].chatTitle;
+            const chatInput = document.getElementById('chat-input');
+            if (chatInput) chatInput.placeholder = translations[window.currentLang].chatPlaceholder;
+            const sendBtn = document.getElementById('chat-send-btn');
+            if (sendBtn) sendBtn.innerText = translations[window.currentLang].sendBtn;
+
+            const dashTitleEl = document.getElementById('dashboard-modal-title-text');
+            if (dashTitleEl) dashTitleEl.innerText = translations[window.currentLang].dashTitle;
+
+            window.renderCategories();
+            window.renderListings(window.listingsData);
+        };
+
+        window.showLocationModal = function() {
+            const cityModal = document.getElementById('city-modal');
+            if (cityModal) cityModal.classList.remove('hidden');
+        };
+
+        window.closeCityModal = function() {
+            const cityModal = document.getElementById('city-modal');
+            if (cityModal) cityModal.classList.add('hidden');
+        };
+
+        window.selectCity = function(city) {
+            const selectedCityEl = document.getElementById('selected-city');
+            if (selectedCityEl) selectedCityEl.innerText = city;
+            window.closeCityModal();
+        };
+
+        window.openPostModal = function() {
+            const postModal = document.getElementById('post-modal');
+            if (postModal) postModal.classList.remove('hidden');
+        };
+
+        window.closePostModal = function() {
+            const postModal = document.getElementById('post-modal');
+            if (postModal) postModal.classList.add('hidden');
+        };
+
+        window.openChatModal = function() {
+            const chatModal = document.getElementById('chat-modal');
+            if (chatModal) {
+                chatModal.classList.remove('hidden');
+                window.renderChatMessages();
+            }
+        };
+
+        window.closeChatModal = function() {
+            const chatModal = document.getElementById('chat-modal');
+            if (chatModal) chatModal.classList.add('hidden');
+        };
+
+        window.openDashboardModal = function() {
+            const dashModal = document.getElementById('dashboard-modal');
+            if (dashModal) {
+                dashModal.classList.remove('hidden');
+                let totalViews = window.listingsData.reduce((acc, item) => acc + (item.views || 500), 0);
+                const totalViewsEl = document.getElementById('stat-total-views');
+                if (totalViewsEl) totalViewsEl.innerText = totalViews.toLocaleString('tr-TR');
+                
+                const activeAdsEl = document.getElementById('stat-active-ads');
+                if (activeAdsEl) activeAdsEl.innerText = window.listingsData.length;
+            }
+        };
+
+        window.closeDashboardModal = function() {
+            const dashModal = document.getElementById('dashboard-modal');
+            if (dashModal) dashModal.classList.add('hidden');
+        };
+
+        window.showFavoritesModal = function() {
+            window.showAlertMessage(window.currentLang === 'tr' ? 'Favoriler' : 'المفضلة', translations[window.currentLang].emptyFav);
+        };
+
+        window.showProfileModal = function() {
+            if (!window.currentUser) {
+                const authModal = document.getElementById('auth-modal');
+                if (authModal) authModal.classList.remove('hidden');
+            } else {
+                window.showAlertMessage(window.currentLang === 'tr' ? 'Hesap Profili' : 'الملف الشخصي', `${window.currentUser.username} (${window.currentUser.email} - ${window.currentUser.phone})\n${translations[window.currentLang].profileDesc}`);
+            }
+        };
+
+        window.closeAuthModal = function() {
+            const authModal = document.getElementById('auth-modal');
+            if (authModal) authModal.classList.add('hidden');
+        };
+
+        window.handleAuth = function(e) {
+            e.preventDefault();
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const phone = document.getElementById('reg-phone').value;
+
+            window.currentUser = { username, email, phone };
+            window.closeAuthModal();
+            window.showAlertMessage(window.currentLang === 'tr' ? 'Giriş Başarılı' : 'تم تسجيل الدخول بنجاح', `${window.currentLang === 'tr' ? 'Hoş geldiniz' : 'أهلاً بك'}, ${username}!`);
+        };
+
+        window.showAlertMessage = function(title, text) {
+            const modalTitle = document.getElementById('custom-modal-title');
+            const modalText = document.getElementById('custom-modal-text');
+            const customModal = document.getElementById('custom-modal');
+            if (modalTitle) modalTitle.innerText = title;
+            if (modalText) modalText.innerText = text;
+            if (customModal) customModal.classList.remove('hidden');
+        };
+
+        window.closeCustomModal = function() {
+            const customModal = document.getElementById('custom-modal');
+            if (customModal) customModal.classList.add('hidden');
+        };
+
+        window.filterCategory = function(cat) {
+            window.currentCategory = cat;
+            window.renderCategories();
+            applyFilters();
+        };
+
+        window.filterListings = function() {
+            applyFilters();
+        };
+
+        function applyFilters() {
+            const searchInput = document.getElementById('search-input');
+            const query = searchInput ? searchInput.value.toLowerCase() : '';
+            let filtered = window.listingsData.filter(item => {
+                const matchesCategory = window.currentCategory === 'all' || item.category === window.currentCategory;
+                const matchesSearch = item.title.toLowerCase().includes(query) || item.location.toLowerCase().includes(query);
+                return matchesCategory && matchesSearch;
+            });
+            window.renderListings(filtered);
+        }
+
+        window.toggleFaceToFaceAI = function() {
+            window.aiSessionActive = !window.aiSessionActive;
+            const container = document.getElementById('ai-video-container');
+            const btnText = document.getElementById('ai-btn-text');
+            const statusIndicator = document.getElementById('ai-status-indicator');
+            
+            if (window.aiSessionActive) {
+                container.classList.remove('hidden');
+                btnText.innerText = translations[window.currentLang].stopAiBtn;
+                statusIndicator.className = "w-3 h-3 rounded-full bg-emerald-500 animate-ping";
+                window.showAlertMessage("Face-to-Face AI", window.currentLang === 'tr' ? 'Yapay zeka yüz yüze bağlantısı aktif edildi!' : 'تم تفعيل اتصال الذكاء الاصطناعي وجهاً لوجه بنجاح!');
+            } else {
+                container.classList.add('hidden');
+                btnText.innerText = translations[window.currentLang].startAiBtn;
+                statusIndicator.className = "w-3 h-3 rounded-full bg-amber-500";
+            }
+        };
+
+        window.submitAd = function(e) {
+            e.preventDefault();
+            if (!window.currentUser) {
+                window.closePostModal();
+                window.showProfileModal();
+                return;
+            }
+            const title = document.getElementById('ad-title').value;
+            const category = document.getElementById('ad-category').value;
+            const price = Number(document.getElementById('ad-price').value);
+            const location = document.getElementById('ad-location').value;
+            let image = document.getElementById('ad-image').value;
+
+            if(!image) {
+                image = "https://placehold.co/400x300/0f172a/10b981?text=" + encodeURIComponent(title);
+            }
+
+            const newAd = {
+                id: window.listingsData.length + 1,
+                title,
+                category,
+                price,
+                location,
+                image,
+                views: 1
+            };
+
+            window.listingsData.unshift(newAd);
+            window.closePostModal();
+            const form = document.getElementById('ad-form');
+            if (form) form.reset();
+            window.renderListings(window.listingsData);
+            window.showAlertMessage(window.currentLang === 'tr' ? 'İlan Yayınlandı' : 'تم نشر الإعلان', window.currentLang === 'tr' ? 'İlanınız başarıyla aktif edildi!' : 'تم نشر إعلانك بنجاح!');
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            window.applyTheme('emerald');
+            window.renderCategories();
+            window.renderListings(window.listingsData);
+        });
     </script>
     <style>
-        .glass-panel { background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .glass-card { background: rgba(31, 41, 55, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        body {
+            background-color: var(--theme-bg, #090d16);
+            color: #f8fafc;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-brand-500 selection:text-white" id="bodyTheme">
+<body class="antialiased pb-28 min-h-screen">
 
-    <!-- Top Navigation Bar -->
-    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800 px-4 py-3">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <div class="flex items-center space-x-3 rtl:space-x-reverse">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center shadow-lg shadow-brand-500/30">
-                    <i class="fa-solid fa-brain-circuit text-white text-lg"></i>
+    <!-- Header / Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-xl border-b border-slate-800">
+        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-2.5 rtl:space-x-reverse">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[var(--theme-500)] to-teal-400 flex items-center justify-center text-slate-950 font-black text-lg shadow-lg">
+                    <i class="fa-solid fa-brain"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Face-to-Face AI</h1>
-                    <span class="text-xs text-brand-400 font-medium">Türkiye Marketplace</span>
+                    <h1 class="font-extrabold text-base tracking-tight text-white leading-none">FaceAI</h1>
+                    <span id="brand-sub" class="text-[10px] font-medium text-[var(--theme-500)] tracking-wider">Yüz Yüze Yapay Zeka Asistanı</span>
                 </div>
             </div>
 
-            <!-- Global Spectrum Themes & Controls -->
-            <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                <select id="themeSelector" onchange="changeTheme(this.value)" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-2 py-1.5 text-slate-300 focus:outline-none focus:border-brand-500">
-                    <option value="emerald">🟢 Crystal Emerald</option>
-                    <option value="sapphire">🔵 Royal Sapphire</option>
-                    <option value="gold">🟡 Solar Gold</option>
-                    <option value="magenta">🟣 Cyber Magenta</option>
-                    <option value="obsidian">⚫ Velvet Obsidian</option>
-                </select>
+            <div class="flex items-center space-x-1.5 rtl:space-x-reverse">
+                <div class="flex items-center space-x-1 bg-slate-900 px-2 py-1 rounded-full border border-slate-800 overflow-x-auto hide-scrollbar">
+                    <button onclick="window.applyTheme('emerald')" data-theme="emerald" class="theme-dot w-3 h-3 rounded-full bg-emerald-500 transition-all"></button>
+                    <button onclick="window.applyTheme('sapphire')" data-theme="sapphire" class="theme-dot w-3 h-3 rounded-full bg-blue-500 transition-all"></button>
+                    <button onclick="window.applyTheme('gold')" data-theme="gold" class="theme-dot w-3 h-3 rounded-full bg-amber-500 transition-all"></button>
+                    <button onclick="window.applyTheme('neon')" data-theme="neon" class="theme-dot w-3 h-3 rounded-full bg-pink-500 transition-all"></button>
+                    <button onclick="window.applyTheme('obsidian')" data-theme="obsidian" class="theme-dot w-3 h-3 rounded-full bg-purple-500 transition-all"></button>
+                    <button onclick="window.applyTheme('ruby')" data-theme="ruby" class="theme-dot w-3 h-3 rounded-full bg-red-500 transition-all"></button>
+                    <button onclick="window.applyTheme('cyan')" data-theme="cyan" class="theme-dot w-3 h-3 rounded-full bg-cyan-500 transition-all"></button>
+                </div>
 
-                <button onclick="toggleLanguage()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold rounded-lg transition-all flex items-center space-x-1 rtl:space-x-reverse">
-                    <i class="fa-solid fa-globe text-brand-400"></i>
-                    <span id="langBtnText">العربية</span>
+                <button onclick="window.toggleLanguage()" class="flex items-center space-x-1 rtl:space-x-reverse bg-slate-900 hover:bg-slate-800 text-[var(--theme-500)] px-2.5 py-1.5 rounded-full text-xs font-bold border border-slate-800 transition-all">
+                    <i class="fa-solid fa-globe text-[11px]"></i>
+                    <span id="lang-btn-text">AR</span>
                 </button>
-
-                <button onclick="openModal('authModal')" class="p-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-semibold shadow-md shadow-brand-600/20 transition-all">
-                    <i class="fa-solid fa-user"></i>
+                <button onclick="window.showLocationModal()" class="flex items-center space-x-1 rtl:space-x-reverse bg-slate-900 hover:bg-slate-800 px-2 py-1.5 rounded-full text-xs font-semibold text-slate-200 border border-slate-800">
+                    <i class="fa-solid fa-location-dot text-[var(--theme-500)]"></i>
+                    <span id="selected-city">İstanbul</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 space-y-6 pb-24">
-        
-        <!-- Live Face-to-Face AI Banner -->
-        <section class="glass-card rounded-2xl p-6 relative overflow-hidden border border-brand-500/20 shadow-2xl">
-            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div class="space-y-2 text-center md:text-start rtl:md:text-right">
-                    <span class="px-3 py-1 bg-brand-500/20 text-brand-400 text-xs font-bold rounded-full uppercase tracking-wider border border-brand-500/30">Live AI Assistant</span>
-                    <h2 class="text-2xl font-extrabold text-white" id="aiBannerTitle">مساعد الذكاء الاصطناعي وجهاً لوجه</h2>
-                    <p class="text-slate-400 text-sm max-w-xl" id="aiBannerDesc">ابحث عن المنتجات، تفاوض مع التجار في تركيا، وقم بالترويج لخدماتك بلحظات عبر الصوت والصورة باللغتين العربية والتركية.</p>
+    <!-- Main Container -->
+    <main class="max-w-md mx-auto px-4 pt-4">
+
+        <div class="relative mb-6">
+            <span class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400 rtl:right-auto rtl:left-0 rtl:pl-4">
+                <i class="fa-solid fa-magnifying-glass text-sm"></i>
+            </span>
+            <input type="text" id="search-input" oninput="window.filterListings()" placeholder="Telefon, araç, inşaat, yapay zeka ara..." class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-2xl text-sm font-medium text-white placeholder-slate-500 focus:outline-none focus:border-[var(--theme-500)] transition-all">
+        </div>
+
+        <div class="mb-6 bg-gradient-to-r from-[var(--theme-600)] via-teal-700 to-slate-900 rounded-3xl p-5 text-white shadow-xl relative overflow-hidden border border-[var(--theme-500)]/30">
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-2">
+                    <span id="feat-badge" class="bg-white/25 backdrop-blur-md text-white font-bold text-[10px] px-3 py-1 rounded-full uppercase tracking-wider">Yapay Zeka Destekli</span>
+                    <div id="ai-status-indicator" class="w-3 h-3 rounded-full bg-amber-500" title="AI Ready"></div>
                 </div>
-                <button onclick="startAIVoiceSession()" class="px-6 py-3 bg-gradient-to-r from-brand-600 to-emerald-500 hover:from-brand-500 hover:to-emerald-400 text-white font-bold rounded-xl shadow-lg shadow-brand-600/30 transition-all flex items-center space-x-2 rtl:space-x-reverse">
-                    <i class="fa-solid fa-video text-lg animate-pulse"></i>
-                    <span id="aiBtnText">بدء المحادثة المباشرة</span>
-                </button>
-            </div>
-        </section>
+                <h3 id="ai-header-title" class="text-lg font-bold mt-1 tracking-tight">Canlı Yüz Yüze Yapay Zeka Asistanı</h3>
+                <p id="ai-header-desc" class="text-xs text-slate-200 mt-1 mb-4">Tedarikçiler, esnaf ve kullanıcılar için sesli ve görüntülü anında akıllı danışmanlık.</p>
+                
+                <div id="ai-video-container" class="hidden mb-4 relative rounded-2xl overflow-hidden bg-slate-950 border border-white/20 h-44 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent z-10"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-20 h-20 rounded-full border-2 border-[var(--theme-500)] animate-ping opacity-75 absolute"></div>
+                        <div class="w-16 h-16 rounded-full bg-[var(--theme-500)]/30 backdrop-blur-md flex items-center justify-center text-[var(--theme-500)] text-2xl z-20">
+                            <i class="fa-solid fa-microphone animate-pulse"></i>
+                        </div>
+                    </div>
+                    <span class="absolute bottom-3 z-20 text-[11px] font-bold bg-slate-900/80 px-3 py-1 rounded-full text-white border border-slate-700">Face-to-Face AI Active (TR / AR)</span>
+                </div>
 
-        <!-- Categories Grid -->
-        <section>
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="font-bold text-lg text-white" id="categoriesTitle">الأقسام والخدمات</h3>
-                <span class="text-xs text-slate-400">₺ TRY</span>
-            </div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-                <button onclick="filterCategory('all')" class="p-4 rounded-xl glass-card hover:border-brand-500 transition-all text-center group">
-                    <i class="fa-solid fa-border-all text-xl text-brand-400 mb-2 group-hover:scale-110 transition-transform"></i>
-                    <span class="block text-xs font-semibold text-slate-200" id="catAll">الكل</span>
-                </button>
-                <button onclick="filterCategory('phones')" class="p-4 rounded-xl glass-card hover:border-brand-500 transition-all text-center group">
-                    <i class="fa-solid fa-mobile-screen text-xl text-brand-400 mb-2 group-hover:scale-110 transition-transform"></i>
-                    <span class="block text-xs font-semibold text-slate-200" id="catPhones">هواتف</span>
-                </button>
-                <button onclick="filterCategory('cars')" class="p-4 rounded-xl glass-card hover:border-brand-500 transition-all text-center group">
-                    <i class="fa-solid fa-car text-xl text-brand-400 mb-2 group-hover:scale-110 transition-transform"></i>
-                    <span class="block text-xs font-semibold text-slate-200" id="catCars">سيارات</span>
-                </button>
-                <button onclick="filterCategory('construction')" class="p-4 rounded-xl glass-card hover:border-brand-500 transition-all text-center group">
-                    <i class="fa-solid fa-helmet-safety text-xl text-brand-400 mb-2 group-hover:scale-110 transition-transform"></i>
-                    <span class="block text-xs font-semibold text-slate-200" id="catConst">بناء</span>
-                </button>
-                <button onclick="filterCategory('computers')" class="p-4 rounded-xl glass-card hover:border-brand-500 transition-all text-center group">
-                    <i class="fa-solid fa-laptop text-xl text-brand-400 mb-2 group-hover:scale-110 transition-transform"></i>
-                    <span class="block text-xs font-semibold text-slate-200" id="catComp">كمبيوترات</span>
+                <button id="ai-btn-start" onclick="window.toggleFaceToFaceAI()" class="w-full bg-white text-slate-950 hover:bg-slate-100 font-bold px-4 py-3 rounded-xl text-xs shadow transition-all flex items-center justify-center space-x-2 rtl:space-x-reverse">
+                    <i class="fa-solid fa-video text-[var(--theme-500)]"></i>
+                    <span id="ai-btn-text">Yüz Yüze Görüşmeyi Başlat</span>
                 </button>
             </div>
-        </section>
+        </div>
 
-        <!-- Marketplace Listings -->
-        <section>
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="font-bold text-lg text-white" id="listingsTitle">الإعلانات المعروضة في تركيا</h3>
-                <button onclick="openModal('addListingModal')" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold rounded-lg shadow transition-all flex items-center space-x-1 rtl:space-x-reverse">
-                    <i class="fa-solid fa-plus"></i>
-                    <span id="addListingBtn">إعلان جديد</span>
-                </button>
+        <div class="mb-6">
+            <div class="flex items-center justify-between mb-3">
+                <h2 id="cat-title" class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Kategoriler</h2>
+                <span class="text-xs text-[var(--theme-500)] font-bold cursor-pointer hover:underline" onclick="window.filterCategory('all')"><span id="theme-name-display" class="text-[10px] text-slate-400 font-normal mr-2">Crystal Emerald</span></span>
             </div>
-            <div id="listingsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                <!-- Dynamic Listings Rendered Here -->
+            <div id="categories-container" class="flex space-x-3 rtl:space-x-reverse overflow-x-auto hide-scrollbar pb-1">
             </div>
-        </section>
+        </div>
+
+        <div class="flex items-center justify-between mb-4">
+            <h2 id="listings-title" class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Aktif İlanlar</h2>
+            <span id="listing-count" class="text-xs font-bold text-[var(--theme-500)]">Yükleniyor...</span>
+        </div>
+
+        <div id="listings-grid" class="grid grid-cols-2 gap-3.5 mb-10">
+        </div>
+
     </main>
 
     <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 glass-panel border-t border-slate-800 px-6 py-2.5 z-40 flex items-center justify-around">
-        <button onclick="switchTab('home')" class="flex flex-col items-center text-brand-400 space-y-1">
-            <i class="fa-solid fa-house text-lg"></i>
-            <span class="text-[10px] font-medium" id="navHome">الرئيسية</span>
-        </button>
-        <button onclick="openChatModal()" class="flex flex-col items-center text-slate-400 hover:text-brand-400 space-y-1">
-            <i class="fa-solid fa-comments text-lg"></i>
-            <span class="text-[10px] font-medium" id="navChat">محادثة</span>
-        </button>
-        <button onclick="openModal('addListingModal')" class="flex flex-col items-center
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-950/95 backdrop-blur-xl border-t border-slate-800 py-2.5 px-4 z-30">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <a href="#" class="flex flex-col items-center text-[var(--theme-500)] space-y-1">
+                <i class="fa-solid fa-house text-sm"></i>
+                <span id="nav-home" class="text-[9px] font-bold">Ana Sayfa</span>
+            </a>
+            <a href="#" onclick="window.openChatModal(); return false;" class="flex flex-col items-center text-slate-400 hover:text-[var(--theme-500)] space-y-1 transition-colors">
+                <i class="fa-solid fa-comments text-sm"></i>
+                <span id="nav-chat" class="text-[9px] font-medium">Sohbet</span>
+            </a>
+            <a href="#" onclick="window.openPostModal(); return false;" class="flex flex-col items-center text-slate-400 hover:text-[var(--theme-500)] space-y-1 transition-colors">
+                <i class="fa-solid fa-plus-circle text-sm"></i>
+                <span id="nav-post" class="text-[9px] font-medium">İlan Ver</span>
+            </a>
+            <a href="#" onclick="window.openDashboardModal(); return false;" class="flex flex-col items-center text-slate-400 hover:text-[var(--theme-500)] space-y-1 transition-colors">
+                <i class="fa-solid fa-chart-line text-sm"></i>
+                <span id="nav-dashboard" class="text-[9px] font-medium">Panel</span>
+            </a>
+            <a href="#" onclick="window.showProfileModal(); return false;" class="flex flex-col items-center text-slate-400 hover:text-[var(--theme-500)] space-y-1 transition-colors">
+                <i class="fa-solid fa-user text-sm"></i>
+                <span id="nav-profile" class="text-[9px] font-medium">Profil</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 w-full max-w-xs rounded-3xl p-6 shadow-2xl border border-slate-800">
+            <div class="flex items-center justify-between mb-4">
+                <h3 id="auth-modal-title-text" class="font-bold text-white text-sm flex items-center space-x-2 rtl:space-x-reverse">
+                    <i class="fa-solid fa-user-lock text-[var(--theme-500)]"></i>
+                    <span>تسجيل الدخول / التسجيل</span>
+                </h3>
+                <button onclick="window.closeAuthModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center hover:bg-slate-700">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form onsubmit="window.handleAuth(event)" class="space-y-3">
+                <div>
+                    <label id="lbl-username" class="block text-[11px] font-semibold text-slate-300 mb-1">اسم المستخدم</label>
+                    <input type="text" id="reg-username" required placeholder="اسمك الكامل" class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-[var(--theme-500)]">
+                </div>
+                <div>
+                    <label id="lbl-email" class="block text-[11px] font-semibold text-slate-300 mb-1">البريد الإلكتروني</label>
+                    <input type="email" id="reg-email" required placeholder="example@mail.com" class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-[var(--theme-500)]">
+                </div>
+                <div>
+                    <label id="lbl-phone" class="block text-[11px] font-semibold text-slate-300 mb-1">رقم الهاتف</label>
+                    <input type="tel" id="reg-phone" required placeholder="0532 000 00 00" class="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-[var(--theme-500)]">
+                </div>
+                <button type="submit" id="auth-submit-btn" class="w-full bg-[var(--theme-500)] hover:opacity-90 text-slate-950 font-bold py-2.5 rounded-xl text-xs shadow transition-all mt-2">
+                    دخول / تسجيل
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Live Chat Modal -->
+    <div id="chat-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 w-full max-w-md rounded-3xl p-5 shadow-2xl border border-slate-800 flex flex-col h-[480px]">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <h3 id="chat-modal-title-text" class="font-bold text-white text-sm flex items-center space-x-2 rtl:space-x-reverse">
+                    <i class="fa-solid fa-comments text-[var(--theme-500)]"></i>
+                    <span>دردشة فورية مع الترجمة الآلية</span>
+                </h3>
+                <button onclick="window.closeChatModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center hover:bg-slate-700">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="chat-messages-container" class="flex-1 overflow-y-auto space-y-3 py-3 pr-1">
+            </div>
+            <form onsubmit="window.sendChatMessage(event)" class="pt-3 border-t border-slate-800 flex space-x-2 rtl:space-x-reverse">
+                <input type="text" id="chat-input" placeholder="اكتب رسالتك هنا (ترجمة تلقائية)..." class="flex-1 p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-[var(--theme-500)]">
+                <button type="submit" id="chat-send-btn" class="bg-[var(--theme-500)] text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs shadow">إرسال</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Merchant Dashboard Modal -->
+    <div id="dashboard-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 w-full max-w-md rounded-3xl p-6 shadow-2xl border border-slate-800">
+            <div class="flex items-center justify-between mb-5">
+                <h3 id="dashboard-modal-title-text" class="font-bold text-white text-base flex items-center space-x-2 rtl:space-x-reverse">
+                    <i class="fa-solid fa-chart-line text-[var(--theme-500)]"></i>
+                    <span>لوحة تحكم التاجر</span>
+                </h3>
+                <button onclick="window.closeDashboardModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center hover:bg-slate-700">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mb-5">
+                <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl text-center">
+                    <i class="fa-solid fa-eye text-[var(--theme-500)] text-lg mb-1"></i>
+                    <h4 class="text-[10px] text-slate-400 uppercase font-bold">إجمالي المشاهدات</h4>
+                    <p id="stat-total-views" class="text-lg font-black text-white mt-1">10,710</p>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl text-center">
+                    <i class="fa-solid fa-box text-teal-400 text-lg mb-1"></i>
+                    <h4 class="text-[10px] text-slate-400 uppercase font-bold">إعلاناتي النشطة</h4>
+                    <p id="stat-active-ads" class="text-lg font-black text-white mt-1">5</p>
+                </div>
+            </div>
+            <button onclick="window.closeDashboardModal(); window.openPostModal();" class="w-full bg-[var(--theme-500)] text-slate-950 font-bold py-3 rounded-xl text-xs shadow">
+                <i class="fa-solid fa-plus-circle mr-1"></i> إضافة إعلان جديد للترويج
+            </button>
+        </div>
+    </div>
+
+    <!-- Post Ad Modal -->
+    <div id="post-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl border border-slate-800 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-5">
+                <h3 id="modal-post-title" class="font-bold text-white text-base flex items-center space-x-2 rtl:space-x-reverse">
+                    <i class="fa-solid fa-plus-circle text-[var(--theme-500)]"></i>
+                    <span>Yeni İlan Ekle</span>
+                </h3>
+                <button onclick="window.closePostModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center hover:bg-slate-700">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="ad-form" onsubmit="window.submitAd(event)" class="space-y-4">
+                <div>
+                    <label id="lbl-title" class="block text-xs font-semibold text-slate-300 mb-1">Ürün Başlığı</label>
+                    <input type="text" id="ad-title" required placeholder="Örn: iPhone 15 Pro / Ford Focus" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-[var(--theme-500)]">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label id="lbl-cat" class="block text-xs font-semibold text-slate-300 mb-1">Kategori</label>
+                        <select id="ad-category" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-[var(--theme-500)]">
+                            <option value="phones">Telefon</option>
+                            <option value="cars">Oto & Araç</option>
+                            <option value="construction">İnşaat</option>
+                            <option value="computers">Bilgisayar</option>
+                            <option value="aiChat">Yüz Yüze AI</option>
+                            <option value="misc">Çeşitli</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label id="lbl-price" class="block text-xs font-semibold text-slate-300 mb-1">Fiyat (₺)</label>
+                        <input type="number" id="ad-price" required placeholder="25000" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-[var(--theme-500)]">
+                    </div>
+                </div>
+                <div>
+                    <label id="lbl-loc" class="block text-xs font-semibold text-slate-300 mb-1">Konum / Şehir</label>
+                    <input type="text" id="ad-location" required placeholder="İstanbul, Kadıköy" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-[var(--theme-500)]">
+                </div>
+                <div>
+                    <label id="lbl-img" class="block text-xs font-semibold text-slate-300 mb-1">Görsel Bağlantısı (URL)</label>
+                    <input type="url" id="ad-image" placeholder="https://placehold.co/400x300/0f172a/10b981?text=Urun" class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-[var(--theme-500)]">
+                </div>
+                <button type="submit" id="submit-ad-btn" class="w-full bg-[var(--theme-500)] hover:opacity-90 text-slate-950 font-bold py-3.5 rounded-xl shadow transition-all mt-4">
+                    İlanı Yayınla
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Modal -->
+    <div id="custom-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 rounded-2xl p-6 max-w-xs w-full text-center shadow-xl border border-slate-800">
+            <div class="w-12 h-12 rounded-full bg-[var(--theme-500)]/20 text-[var(--theme-500)] flex items-center justify-center mx-auto mb-3 text-xl font-bold border border-[var(--theme-500)]/30">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h4 id="custom-modal-title" class="font-bold text-white mb-1">İşlem Başarılı</h4>
+            <p id="custom-modal-text" class="text-xs text-slate-300 mb-4">İşleminiz başarıyla gerçekleştirildi.</p>
+            <button id="custom-modal-ok" onclick="window.closeCustomModal()" class="w-full bg-[var(--theme-500)] hover:opacity-90 text-slate-950 font-bold py-2.5 rounded-xl text-xs">Tamam</button>
+        </div>
+    </div>
+
+    <!-- City Selection Modal -->
+    <div id="city-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 rounded-2xl p-5 max-w-xs w-full shadow-xl border border-slate-800">
+            <div class="flex items-center justify-between mb-3">
+                <h4 id="city-modal-title" class="font-bold text-white text-sm">Konum Seçin</h4>
+                <button onclick="window.closeCityModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-1.5 max-h-48 overflow-y-auto">
+                <button onclick="window.selectCity('İstanbul')" class="w-full text-left p-2 hover:bg-slate-800 rounded-lg text-xs font-medium text-slate-200">İstanbul</button>
+                <button onclick="window.selectCity('Ankara')" class="w-full text-left p-2 hover:bg-slate-800 rounded-lg text-xs font-medium text-slate-200">Ankara</button>
+                <button onclick="window.selectCity('İzmir')" class="w-full text-left p-2 hover:bg-slate-800 rounded-lg text-xs font-medium text-slate-200">İzmir</button>
+                <button onclick="window.selectCity('Bursa')" class="w-full text-left p-2 hover:bg-slate-800 rounded-lg text-xs font-medium text-slate-200">Bursa</button>
+                <button onclick="window.selectCity('Antalya')" class="w-full text-left p-2 hover:bg-slate-800 rounded-lg text-xs font-medium text-slate-200">Antalya</button>
+                <button onclick="window.selectCity('Adana')" class="w-full text-left p-2 hover:bg-slate-800 rounded-lg text-xs font-medium text-slate-200">Adana</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
