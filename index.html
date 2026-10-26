@@ -398,7 +398,7 @@
             }
 
             const cleanPhone = phone.replace(/[^0-9]/g, '');
-            if (cleanPhone.length < 10 || /^0+\$/.test(cleanPhone)) {
+            if (cleanPhone.length < 10 || /^0+$/.test(cleanPhone)) {
                 window.showAlertMessage('رقم هاتف غير صالح', 'يرجى إدخال رقم هاتف حقيقي صحيح.');
                 return;
             }
@@ -554,4 +554,327 @@
                         <div class="text-[10px] font-bold text-slate-400 px-2 py-1 mb-1 border-b border-slate-800 text-right">اللغة</div>
                         <div class="flex flex-col gap-1 text-right">
                             <button onclick="window.changeLanguage('ar', 'العربية')" class="px-2 py-1.5 text-xs text-white hover:bg-[var(--theme-500)] hover:text-slate-950 rounded-lg font-bold transition-colors">العربية</button>
-                            <button onclick="
+                            <button onclick="window.changeLanguage('tr', 'Türkçe')" class="px-2 py-1.5 text-xs text-white hover:bg-[var(--theme-500)] hover:text-slate-950 rounded-lg font-bold transition-colors">Türkçe</button>
+                            <button onclick="window.changeLanguage('en', 'English')" class="px-2 py-1.5 text-xs text-white hover:bg-[var(--theme-500)] hover:text-slate-950 rounded-lg font-bold transition-colors">English</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- قائمة الألوان -->
+                <div class="relative group">
+                    <button class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-[var(--theme-500)] hover:bg-slate-800 transition-colors" title="تغيير الألوان">
+                        <i class="fa-solid fa-palette text-xs"></i>
+                    </button>
+                    <div class="absolute left-0 mt-2 w-48 bg-slate-900 border border-slate-800 rounded-2xl shadow-xl p-2 hidden group-hover:block z-50">
+                        <div class="text-[10px] font-bold text-slate-400 px-2 py-1 mb-1 border-b border-slate-800 flex justify-between items-center">
+                            <span>الألوان</span>
+                            <span id="theme-name-display" class="text-[var(--theme-500)]">زمرد كريستالي</span>
+                        </div>
+                        <div class="grid grid-cols-7 gap-1 p-1">
+                            <button onclick="window.applyTheme('emerald')" data-theme="emerald" class="theme-dot w-5 h-5 rounded-full bg-emerald-500 transition-transform"></button>
+                            <button onclick="window.applyTheme('sapphire')" data-theme="sapphire" class="theme-dot w-5 h-5 rounded-full bg-blue-500 transition-transform"></button>
+                            <button onclick="window.applyTheme('gold')" data-theme="gold" class="theme-dot w-5 h-5 rounded-full bg-amber-500 transition-transform"></button>
+                            <button onclick="window.applyTheme('neon')" data-theme="neon" class="theme-dot w-5 h-5 rounded-full bg-pink-500 transition-transform"></button>
+                            <button onclick="window.applyTheme('obsidian')" data-theme="obsidian" class="theme-dot w-5 h-5 rounded-full bg-purple-500 transition-transform"></button>
+                            <button onclick="window.applyTheme('ruby')" data-theme="ruby" class="theme-dot w-5 h-5 rounded-full bg-red-500 transition-transform"></button>
+                            <button onclick="window.applyTheme('cyan')" data-theme="cyan" class="theme-dot w-5 h-5 rounded-full bg-cyan-500 transition-transform"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- زر البروفايل -->
+                <button onclick="window.showProfileModal()" class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-300 hover:text-[var(--theme-500)] transition-colors" title="حسابي والبروفايل">
+                    <i class="fa-solid fa-user text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى -->
+    <main class="flex-1 max-w-md w-full mx-auto p-4 pb-24 space-y-5">
+        
+        <!-- قسم الرئيسية -->
+        <div id="home-section" class="app-section space-y-5">
+            <div class="flex items-center gap-2">
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text" id="search-input" oninput="window.handleSearch(event)" placeholder="ابحث عن هاتف، سيارة، معدات..." class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-2.5 pr-10 pl-4 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[var(--theme-500)] transition-colors">
+                </div>
+                <button onclick="window.showLocationModal()" class="bg-slate-900 border border-slate-800 hover:border-[var(--theme-500)] px-3 py-2.5 rounded-2xl flex items-center gap-1.5 text-xs text-slate-300 transition-colors">
+                    <i class="fa-solid fa-location-dot text-[var(--theme-500)]"></i>
+                    <span id="selected-city" class="font-semibold">تركيا</span>
+                </button>
+            </div>
+
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">التصنيفات</h3>
+                </div>
+                <div id="categories-container" class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar"></div>
+            </div>
+
+            <div class="relative bg-gradient-to-br from-slate-900 via-slate-900 to-[var(--theme-500)]/20 border border-slate-800 hover:border-[var(--theme-500)] rounded-3xl p-5 overflow-hidden shadow-xl transition-all">
+                <div class="absolute -left-6 -bottom-6 w-32 h-32 bg-[var(--theme-500)]/10 rounded-full blur-2xl"></div>
+                <div class="relative z-10">
+                    <span class="inline-block bg-[var(--theme-500)]/20 border border-[var(--theme-500)]/40 text-[var(--theme-500)] text-[10px] px-3 py-1 rounded-full font-bold mb-2">
+                        مدعوم بالذكاء الاصطناعي
+                    </span>
+                    <h2 class="text-base font-extrabold text-white mb-1">ترويج وبيع ذكي وجهاً لوجه</h2>
+                    <p class="text-xs text-slate-300 mb-4 leading-relaxed">اعرض منتجك فوراً بالليرة التركية عبر مساعد الذكاء الاصطناعي.</p>
+                    <div class="flex items-center gap-2">
+                        <button onclick="window.openPostModal()" class="bg-[var(--theme-500)] hover:bg-[var(--theme-600)] text-slate-950 font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-lg transition-all active:scale-95 flex items-center gap-2">
+                            <i class="fa-solid fa-plus"></i><span>إضافة إعلان</span>
+                        </button>
+                        <button onclick="window.switchTab('ai-section')" class="bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl border border-slate-700 transition-all active:scale-95 flex items-center gap-2">
+                            <i class="fa-solid fa-brain text-[var(--theme-500)]"></i><span>محادثة AI</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-2">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">الإعلانات النشطة</h3>
+                <span id="listing-count" class="text-[10px] bg-slate-900 border border-slate-800 text-[var(--theme-500)] font-bold px-2.5 py-1 rounded-xl">0 إعلان</span>
+            </div>
+            <div id="listings-grid" class="grid grid-cols-2 gap-3"></div>
+        </div>
+
+        <!-- قسم الذكاء الاصطناعي -->
+        <div id="ai-section" class="app-section hidden space-y-4">
+            <div class="text-center space-y-2 py-4">
+                <div class="w-16 h-16 mx-auto rounded-3xl bg-[var(--theme-500)]/10 border border-[var(--theme-500)]/30 flex items-center justify-center text-[var(--theme-500)] text-2xl shadow-xl">
+                    <i class="fa-solid fa-brain animate-pulse"></i>
+                </div>
+                <h2 class="text-base font-extrabold text-white">المساعد الحي للذكاء الاصطناعي</h2>
+                <p class="text-xs text-slate-400 max-w-xs mx-auto">تحدث مع المساعد بالصوت والصورة، وابحث عن المنتجات واطلب الاستشارة المباشرة.</p>
+            </div>
+
+            <div id="ai-video-box" class="relative bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden aspect-video flex items-center justify-center shadow-2xl transition-all">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent z-10"></div>
+                <img src="https://placehold.co/600x400/090d16/10b981?text=Face-to-Face+AI+Live" alt="AI Feed" class="w-full h-full object-cover opacity-80">
+                <div class="absolute bottom-3 right-3 left-3 z-20 flex items-center justify-between">
+                    <div class="flex items-center gap-2 bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-800">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                        <span id="ai-status" class="text-[10px] font-bold text-white">جاهز - قم بتشغيل الكاميرا أو الصوت</span>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="window.toggleAiSession()" class="w-full bg-[var(--theme-500)] hover:bg-[var(--theme-600)] text-slate-950 font-extrabold text-xs py-3.5 rounded-2xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-power-off"></i>
+                <span id="ai-btn-text">بدء المحادثة المرئية</span>
+            </button>
+        </div>
+
+        <!-- قسم المحادثة الفورية -->
+        <div id="chat-section" class="app-section hidden space-y-4">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 flex flex-col h-[500px]">
+                <div class="border-b border-slate-800 pb-3 mb-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-xl bg-[var(--theme-500)]/20 text-[var(--theme-500)] flex items-center justify-center font-bold text-xs"><i class="fa-solid fa-comments"></i></div>
+                        <div>
+                            <h4 class="font-bold text-xs text-white">محادثة الإعلانات</h4>
+                            <p class="text-[10px] text-slate-400">تواصل مباشر وآمن بين البائع والمشتري</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="chat-messages-container" class="flex-1 overflow-y-auto space-y-3 pl-1 text-xs"></div>
+                <form onsubmit="window.sendChatMessage(event)" class="mt-3 pt-3 border-t border-slate-800 flex gap-2">
+                    <input type="text" id="chat-input" placeholder="اكتب رسالتك هنا..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[var(--theme-500)]">
+                    <button type="submit" class="bg-[var(--theme-500)] hover:bg-[var(--theme-600)] text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition-colors">إرسال</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- قسم لوحة التحكم -->
+        <div id="dashboard-section" class="app-section hidden space-y-4">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-4">
+                <h3 class="text-sm font-extrabold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line text-[var(--theme-500)]"></i>
+                    لوحة تحكم التاجر
+                </h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-2xl">
+                        <p class="text-[10px] text-slate-400 mb-1">إجمالي المشاهدات</p>
+                        <h4 class="text-base font-extrabold text-[var(--theme-500)]">10,850</h4>
+                    </div>
+                    <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-2xl">
+                        <p class="text-[10px] text-slate-400 mb-1">إعلاناتي النشطة</p>
+                        <h4 class="text-base font-extrabold text-white">5</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- شريط التنقل السفلي -->
+    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-md border-t border-slate-800 py-2 px-4">
+        <div class="max-w-md mx-auto flex items-center justify-around">
+            <button onclick="window.switchTab('home-section')" id="nav-btn-home-section" class="nav-item flex flex-col items-center text-[var(--theme-500)] transition-colors">
+                <i class="fa-solid fa-house text-sm mb-1"></i><span class="text-[10px] font-bold">الرئيسية</span>
+            </button>
+            <button onclick="window.switchTab('ai-section')" id="nav-btn-ai-section" class="nav-item flex flex-col items-center text-slate-400 hover:text-[var(--theme-500)] transition-colors">
+                <i class="fa-solid fa-brain text-sm mb-1"></i><span class="text-[10px] font-bold">ذكاء اصطناعي</span>
+            </button>
+            <button onclick="window.openPostModal()" class="flex flex-col items-center -mt-5">
+                <div class="w-12 h-12 rounded-2xl bg-[var(--theme-500)] text-slate-950 flex items-center justify-center shadow-lg font-bold text-lg hover:bg-[var(--theme-600)] transition-transform active:scale-95"><i class="fa-solid fa-plus"></i></div>
+                <span class="text-[10px] font-bold text-slate-400 mt-1">أضف إعلان</span>
+            </button>
+            <button onclick="window.switchTab('dashboard-section')" id="nav-btn-dashboard-section" class="nav-item flex flex-col items-center text-slate-400 hover:text-[var(--theme-500)] transition-colors">
+                <i class="fa-solid fa-chart-pie text-sm mb-1"></i><span class="text-[10px] font-bold">لوحة التحكم</span>
+            </button>
+            <button onclick="window.switchTab('chat-section')" id="nav-btn-chat-section" class="nav-item flex flex-col items-center text-slate-400 hover:text-[var(--theme-500)] transition-colors">
+                <i class="fa-solid fa-comments text-sm mb-1"></i><span class="text-[10px] font-bold">المحادثة</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- النوافذ المنبثقة -->
+
+    <!-- نافذة إضافة إعلان -->
+    <div id="post-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-sm p-5 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="font-extrabold text-xs text-white"><i class="fa-solid fa-plus-circle text-[var(--theme-500)] ml-2"></i>إضافة إعلان جديد</h3>
+                <button onclick="window.closePostModal()" class="w-7 h-7 rounded-xl bg-slate-800 text-slate-400 flex items-center justify-center hover:text-white"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+            <form id="post-ad-form" onsubmit="window.submitNewAd(event)" class="space-y-3">
+                <input type="text" id="ad-title" required placeholder="عنوان الإعلان" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[var(--theme-500)]">
+                <select id="ad-category" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[var(--theme-500)]">
+                    <option value="phones">هواتف</option>
+                    <option value="cars">سيارات</option>
+                    <option value="construction">مقاولات</option>
+                    <option value="computers">كمبيوتر</option>
+                    <option value="aiChat">ذكاء اصطناعي</option>
+                    <option value="misc">متفرقات</option>
+                </select>
+                <input type="number" id="ad-price" required placeholder="السعر (₺)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[var(--theme-500)]">
+                <input type="text" id="ad-location" required placeholder="الموقع / المدينة" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[var(--theme-500)]">
+                <input type="file" id="ad-image-file" accept="image/*" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white file:bg-[var(--theme-500)] file:text-slate-950 file:border-0 file:rounded file:px-2 file:py-1 file:ml-2">
+                <button type="submit" class="w-full bg-[var(--theme-500)] hover:bg-[var(--theme-600)] text-slate-950 font-extrabold text-xs py-2.5 rounded-xl mt-2">نشر الإعلان</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة اختيار المدينة -->
+    <div id="city-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-xs p-5 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="font-extrabold text-xs text-white">اختر المدينة</h3>
+                <button onclick="window.closeCityModal()" class="w-7 h-7 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 flex items-center justify-center hover:text-white">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+                <button onclick="window.selectCity('إسطنبول')" class="bg-slate-950 hover:bg-[var(--theme-500)] hover:text-slate-950 border border-slate-800 p-2.5 rounded-xl font-bold transition-colors">إسطنبول</button>
+                <button onclick="window.selectCity('أنقرة')" class="bg-slate-950 hover:bg-[var(--theme-500)] hover:text-slate-950 border border-slate-800 p-2.5 rounded-xl font-bold transition-colors">أنقرة</button>
+                <button onclick="window.selectCity('إزمير')" class="bg-slate-950 hover:bg-[var(--theme-500)] hover:text-slate-950 border border-slate-800 p-2.5 rounded-xl font-bold transition-colors">إزمير</button>
+                <button onclick="window.selectCity('بورصة')" class="bg-slate-950 hover:bg-[var(--theme-500)] hover:text-slate-950 border border-slate-800 p-2.5 rounded-xl font-bold transition-colors">بورصة</button>
+                <button onclick="window.selectCity('أضنة')" class="bg-slate-950 hover:bg-[var(--theme-500)] hover:text-slate-950 border border-slate-800 p-2.5 rounded-xl font-bold transition-colors">أضنة</button>
+                <button onclick="window.selectCity('تركيا (الكل)')" class="bg-slate-950 hover:bg-[var(--theme-500)] hover:text-slate-950 border border-slate-800 p-2.5 rounded-xl font-bold transition-colors">كل تركيا</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة البروفايل (مُصلحة بالكامل) -->
+    <div id="profile-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-sm p-5 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="font-extrabold text-sm text-white"><i class="fa-solid fa-id-badge text-[var(--theme-500)] ml-2"></i>الملف الشخصي</h3>
+                <button onclick="window.closeProfileModal()" class="w-7 h-7 rounded-xl bg-slate-800 text-slate-400 flex items-center justify-center hover:text-white"><i class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+            
+            <div class="flex flex-col items-center text-center space-y-2 py-3 border-b border-slate-800">
+                <img id="profile-view-avatar" src="" alt="صورة البروفايل" class="w-20 h-20 rounded-full object-cover border-2 border-[var(--theme-500)] shadow-md">
+                <div>
+                    <h4 id="profile-view-name" class="font-extrabold text-sm text-white">اسم المستخدم</h4>
+                    <div id="profile-view-badge" class="mt-1 flex justify-center"></div> <!-- الشارة / النسر الذهبي -->
+                    <p id="profile-view-email" class="text-[11px] text-[var(--theme-500)] mt-1">user@gmail.com</p>
+                    <p id="profile-view-phone" class="text-[10px] text-slate-400">0532 000 00 00</p>
+                    <!-- حقل النبذة الذي كان مفقوداً وسبب المشكلة تم إرجاعه -->
+                    <p id="profile-view-bio" class="text-[11px] text-slate-300 italic px-2 mt-2"></p>
+                </div>
+            </div>
+
+            <form onsubmit="window.saveProfileChanges(event)" class="space-y-3">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1">الاسم الكامل</label>
+                    <input type="text" id="edit-username" autocomplete="name" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[var(--theme-500)]">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1">رقم الهاتف</label>
+                    <input type="tel" id="edit-phone" autocomplete="tel" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[var(--theme-500)]">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1">نبذة عن الحساب</label>
+                    <textarea id="edit-bio" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white resize-none focus:outline-none focus:border-[var(--theme-500)]"></textarea>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-1">تحديث صورة البروفايل</label>
+                    <input type="file" id="edit-avatar-file" accept="image/*" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-xs text-white file:bg-[var(--theme-500)] file:text-slate-950 file:border-0 file:rounded file:px-2 file:py-1 file:ml-2">
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" class="flex-1 bg-[var(--theme-500)] hover:bg-[var(--theme-600)] text-slate-950 font-extrabold text-xs py-2.5 rounded-xl transition-all">حفظ التعديلات</button>
+                    <button type="button" onclick="window.logoutUser()" class="bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white px-3 py-2.5 rounded-xl font-bold text-xs transition-colors">خروج</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة تسجيل الدخول / إنشاء حساب -->
+    <div id="auth-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-xs overflow-hidden shadow-2xl">
+            <div class="flex border-b border-slate-800 bg-slate-950/50">
+                <button onclick="window.switchAuthTab('login')" id="tab-login" class="flex-1 py-3 text-xs font-bold border-b-2 border-[var(--theme-500)] text-[var(--theme-500)] transition-colors">دخول</button>
+                <button onclick="window.switchAuthTab('register')" id="tab-register" class="flex-1 py-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-colors">حساب جديد</button>
+                <button onclick="window.closeAuthModal()" class="px-4 text-slate-400 border-r border-slate-800 hover:text-white transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
+            </div>
+
+            <div class="p-5">
+                <form id="login-form" onsubmit="window.handleLogin(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 mb-1">البريد الإلكتروني</label>
+                        <input type="email" id="login-email" name="email" autocomplete="email" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[var(--theme-500)]">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 mb-1">كلمة المرور</label>
+                        <input type="password" id="login-password" name="password" autocomplete="current-password" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[var(--theme-500)]">
+                    </div>
+                    <button type="submit" class="w-full bg-[var(--theme-500)] text-slate-950 font-extrabold text-xs py-2.5 rounded-xl mt-2 hover:bg-[var(--theme-600)] transition-colors">تسجيل الدخول</button>
+                </form>
+
+                <form id="register-form" onsubmit="window.handleRegister(event)" class="space-y-3 hidden">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 mb-1">الاسم (اكتب "أدمن" للنسر الذهبي)</label>
+                        <input type="text" id="reg-username" name="name" autocomplete="name" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[var(--theme-500)]">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 mb-1">البريد (جيميل حصراً)</label>
+                        <input type="email" id="reg-email" name="email" autocomplete="email" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[var(--theme-500)]">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 mb-1">الهاتف</label>
+                        <input type="tel" id="reg-phone" name="tel" autocomplete="tel" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[var(--theme-500)]">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 mb-1">كلمة المرور</label>
+                        <input type="password" id="reg-password" name="new-password" autocomplete="new-password" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[var(--theme-500)]">
+                    </div>
+                    <button type="submit" class="w-full bg-[var(--theme-500)] text-slate-950 font-extrabold text-xs py-2.5 rounded-xl mt-2 hover:bg-[var(--theme-600)] transition-colors">إنشاء الحساب</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة التنبيهات -->
+    <div id="custom-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-xs p-5 space-y-4 shadow-2xl text-center">
+            <h4 id="custom-modal-title" class="font-bold text-sm text-white mb-1">تنبيه</h4>
+            <p id="custom-modal-text" class="text-xs text-slate-300 whitespace-pre-line mb-4"></p>
+            <button onclick="window.closeCustomModal()" class="w-full bg-[var(--theme-500)] hover:bg-[var(--theme-600)] text-slate-950 font-extrabold text-xs py-2.5 rounded-xl transition-colors">حسناً</button>
+        </div>
+    </div>
+
+</body>
+</html>
