@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Face-to-Face AI - Global Spectrum & Smart Promotion Hub</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Plus Jakarta Sans Font -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
@@ -22,14 +19,12 @@
             }
         }
 
-        // --- GLOBAL SCOPE HOISTING FOR ALL EVENT HANDLERS ---
         window.currentThemeKey = 'emerald';
         window.currentUser = null;
         window.currentLang = 'tr';
         window.currentCategory = 'all';
         window.aiSessionActive = false;
 
-        // Global theme spectrum configurations representing all colors of the world
         const themes = {
             emerald: { name: 'Crystal Emerald', p500: '#10b981', p600: '#059669', bg: '#090d16', card: '#111827', border: '#1f2937' },
             sapphire: { name: 'Royal Sapphire', p500: '#3b82f6', p600: '#2563eb', bg: '#080c14', card: '#0f172a', border: '#1e293b' },
@@ -65,7 +60,6 @@
             }
         };
 
-        // Comprehensive bilingual dictionary for 100% full localization (TR & AR)
         const translations = {
             tr: {
                 brandSub: "Yüz Yüze Yapay Zeka Asistanı",
@@ -212,51 +206,11 @@
         };
 
         window.listingsData = [
-            {
-                id: 1,
-                title: "iPhone 15 Pro Max 256GB - Kusursuz",
-                category: "phones",
-                price: 68500,
-                location: "İstanbul, Kadıköy",
-                image: "https://placehold.co/400x300/0f172a/10b981?text=iPhone+15+Pro",
-                views: 1240
-            },
-            {
-                id: 2,
-                title: "2022 Ford Focus 1.5 Ecoblue Trend X",
-                category: "cars",
-                price: 940000,
-                location: "Ankara, Çankaya",
-                image: "https://placehold.co/400x300/0f172a/059669?text=Ford+Focus",
-                views: 3120
-            },
-            {
-                id: 3,
-                title: "Komple İnşaat ve Tadilat Ekipman Seti",
-                category: "construction",
-                price: 18500,
-                location: "Bursa, Nilüfer",
-                image: "https://placehold.co/400x300/0f172a/34d399?text=Insaat+Seti",
-                views: 890
-            },
-            {
-                id: 4,
-                title: "Asus ROG Strix Gaming Laptop RTX 4080",
-                category: "computers",
-                price: 64000,
-                location: "İzmir, Bornova",
-                image: "https://placehold.co/400x300/0f172a/047857?text=Gaming+Laptop",
-                views: 1560
-            },
-            {
-                id: 5,
-                title: "Face-to-Face AI Asistan Danışmanlık",
-                category: "aiChat",
-                price: 1500,
-                location: "İstanbul, Şişli",
-                image: "https://placehold.co/400x300/0f172a/8b5cf6?text=Face-to-Face+AI",
-                views: 4500
-            }
+            { id: 1, title: "iPhone 15 Pro Max 256GB - Kusursuz", category: "phones", price: 68500, location: "İstanbul, Kadıköy", image: "https://placehold.co/400x300/0f172a/10b981?text=iPhone+15+Pro", views: 1240 },
+            { id: 2, title: "2022 Ford Focus 1.5 Ecoblue Trend X", category: "cars", price: 940000, location: "Ankara, Çankaya", image: "https://placehold.co/400x300/0f172a/059669?text=Ford+Focus", views: 3120 },
+            { id: 3, title: "Komple İnşaat ve Tadilat Ekipman Seti", category: "construction", price: 18500, location: "Bursa, Nilüfer", image: "https://placehold.co/400x300/0f172a/34d399?text=Insaat+Seti", views: 890 },
+            { id: 4, title: "Asus ROG Strix Gaming Laptop RTX 4080", category: "computers", price: 64000, location: "İzmir, Bornova", image: "https://placehold.co/400x300/0f172a/047857?text=Gaming+Laptop", views: 1560 },
+            { id: 5, title: "Face-to-Face AI Asistan Danışmanlık", category: "aiChat", price: 1500, location: "İstanbul, Şişli", image: "https://placehold.co/400x300/0f172a/8b5cf6?text=Face-to-Face+AI", views: 4500 }
         ];
 
         window.chatMessages = [
@@ -279,3 +233,472 @@
         window.renderCategories = function() {
             const container = document.getElementById('categories-container');
             if(!container) return;
+            const t = translations[window.currentLang];
+            const cats = [
+                { id: 'all', name: t.all, icon: 'fa-border-all' },
+                { id: 'phones', name: t.phones, icon: 'fa-mobile-screen' },
+                { id: 'cars', name: t.cars, icon: 'fa-car' },
+                { id: 'construction', name: t.construction, icon: 'fa-building' },
+                { id: 'computers', name: t.computers, icon: 'fa-laptop' },
+                { id: 'aiChat', name: t.aiChat, icon: 'fa-brain' },
+                { id: 'misc', name: t.misc, icon: 'fa-box-archive' }
+            ];
+
+            container.innerHTML = '';
+            cats.forEach(c => {
+                const isActive = window.currentCategory === c.id;
+                const btn = document.createElement('button');
+                btn.onclick = () => window.filterCategory(c.id);
+                btn.className = `category-btn flex flex-col items-center justify-center min-w-[76px] h-20 rounded-2xl shadow-md transition-all flex-shrink-0 active:scale-95 font-bold ${
+                    isActive ? 'bg-[var(--theme-500)] text-slate-950 shadow-[var(--theme-500)]/30' : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800'
+                }`;
+                btn.innerHTML = `
+                    <i class="fa-solid ${c.icon} text-base mb-1.5 ${isActive ? 'text-slate-950' : 'text-[var(--theme-500)]'}"></i>
+                    <span class="text-[11px]">${c.name}</span>
+                `;
+                container.appendChild(btn);
+            });
+        };
+
+        window.renderListings = function(items) {
+            const grid = document.getElementById('listings-grid');
+            const countEl = document.getElementById('listing-count');
+            if (!grid || !countEl) return;
+            grid.innerHTML = '';
+            countEl.innerText = `${items.length} ${translations[window.currentLang].activeListingsText}`;
+
+            if (items.length === 0) {
+                grid.innerHTML = `<div class="col-span-2 text-center py-10 text-slate-400 text-xs">${translations[window.currentLang].itemNotFound}</div>`;
+                return;
+            }
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900 border border-slate-800 hover:border-[var(--theme-500)] rounded-2xl overflow-hidden transition-all flex flex-col justify-between shadow-lg";
+                card.innerHTML = `
+                    <div>
+                        <div class="relative h-36 bg-slate-950 overflow-hidden">
+                            <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.src='https://placehold.co/400x300/0f172a/10b981?text=FaceToFaceAI'">
+                            <span class="absolute top-2 right-2 bg-slate-900/95 backdrop-blur-md text-[var(--theme-500)] border border-slate-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold rtl:right-auto rtl:left-2">
+                                ${formatCategoryName(item.category)}
+                            </span>
+                        </div>
+                        <div class="p-3">
+                            <h4 class="font-semibold text-xs text-white line-clamp-2 mb-1">${item.title}</h4>
+                            <p class="text-[10px] text-slate-400"><i class="fa-solid fa-location-dot ml-1 rtl:ml-0 rtl:mr-1 text-[var(--theme-500)]"></i>${item.location}</p>
+                        </div>
+                    </div>
+                    <div class="p-3 pt-0 flex items-center justify-between mt-2">
+                        <span class="font-extrabold text-sm text-[var(--theme-500)]">${item.price.toLocaleString()} ₺</span>
+                        <div class="flex space-x-1.5 rtl:space-x-reverse">
+                            <button onclick="window.openChatModal()" class="w-7 h-7 rounded-xl bg-slate-800 hover:bg-[var(--theme-500)] hover:text-slate-950 text-slate-300 flex items-center justify-center transition-colors" title="Chat">
+                                <i class="fa-solid fa-comments text-xs"></i>
+                            </button>
+                            <button onclick="window.showDetails(${item.id})" class="w-7 h-7 rounded-xl bg-slate-800 hover:bg-[var(--theme-500)] hover:text-slate-950 text-slate-300 flex items-center justify-center transition-colors" title="Details">
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        };
+
+        window.showDetails = function(id) {
+            const item = window.listingsData.find(i => i.id === id);
+            if (!item) return;
+            window.showAlertMessage(
+                translations[window.currentLang].detailsTitle,
+                `${item.title}\n${item.price.toLocaleString()} ₺\n${item.location}`
+            );
+        };
+
+        window.renderChatMessages = function() {
+            const container = document.getElementById('chat-messages-container');
+            if (!container) return;
+            container.innerHTML = '';
+            window.chatMessages.forEach(m => {
+                const div = document.createElement('div');
+                div.className = "bg-slate-950 border border-slate-800 p-3 rounded-2xl";
+                div.innerHTML = `
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[11px] font-bold text-[var(--theme-500)]">${m.sender}</span>
+                        <span class="text-[9px] text-slate-500">${m.time}</span>
+                    </div>
+                    <p class="text-xs text-white">${m.text}</p>
+                    <div class="mt-1 pt-1 border-t border-slate-900 text-[11px] text-teal-400 italic">
+                        <i class="fa-solid fa-language text-[10px] mr-1"></i> ${m.translated}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            container.scrollTop = container.scrollHeight;
+        };
+
+        window.sendChatMessage = function(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            if (!input || !input.value.trim()) return;
+            const text = input.value.trim();
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            const translated = window.currentLang === 'tr' ? `[Arapça Çeviri]: ${text}` : `[Türkçe Çeviri]: ${text}`;
+
+            window.chatMessages.push({
+                sender: window.currentUser ? window.currentUser.username : (window.currentLang === 'tr' ? 'Misafir Kullanıcı' : 'مستخدم ضيف'),
+                text,
+                translated,
+                time
+            });
+            input.value = '';
+            window.renderChatMessages();
+        };
+
+        window.toggleLanguage = function() {
+            window.currentLang = window.currentLang === 'tr' ? 'ar' : 'tr';
+            const htmlEl = document.documentElement;
+            htmlEl.setAttribute('dir', window.currentLang === 'ar' ? 'rtl' : 'ltr');
+            htmlEl.setAttribute('lang', window.currentLang);
+            
+            const langBtnText = document.getElementById('lang-btn-text');
+            if (langBtnText) langBtnText.innerText = window.currentLang === 'tr' ? 'AR' : 'TR';
+
+            const brandSub = document.getElementById('brand-sub');
+            if (brandSub) brandSub.innerText = translations[window.currentLang].brandSub;
+
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) searchInput.placeholder = translations[window.currentLang].searchPlaceholder;
+
+            const catTitle = document.getElementById('cat-title');
+            if (catTitle) catTitle.innerText = translations[window.currentLang].categoriesTitle;
+
+            const featBadge = document.getElementById('feat-badge');
+            if (featBadge) featBadge.innerText = translations[window.currentLang].featuredBadge;
+
+            const featTitle = document.getElementById('feat-title');
+            if (featTitle) featTitle.innerText = translations[window.currentLang].featuredTitle;
+
+            const featDesc = document.getElementById('feat-desc');
+            if (featDesc) featDesc.innerText = translations[window.currentLang].featuredDesc;
+
+            const listingsTitle = document.getElementById('listings-title');
+            if (listingsTitle) listingsTitle.innerText = translations[window.currentLang].currentListings;
+            
+            const navHome = document.getElementById('nav-home');
+            if (navHome) navHome.innerText = translations[window.currentLang].homeNav;
+
+            const navAi = document.getElementById('nav-ai');
+            if (navAi) navAi.innerText = translations[window.currentLang].aiNav;
+
+            const navPost = document.getElementById('nav-post');
+            if (navPost) navPost.innerText = translations[window.currentLang].postNav;
+
+            const navFav = document.getElementById('nav-fav');
+            if (navFav) navFav.innerText = translations[window.currentLang].favNav;
+
+            const navProfile = document.getElementById('nav-profile');
+            if (navProfile) navProfile.innerText = translations[window.currentLang].profileNav;
+
+            const navChat = document.getElementById('nav-chat');
+            if (navChat) navChat.innerText = translations[window.currentLang].chatNav;
+
+            const navDashboard = document.getElementById('nav-dashboard');
+            if (navDashboard) navDashboard.innerText = translations[window.currentLang].dashboardNav;
+
+            const aiHeaderTitle = document.getElementById('ai-header-title');
+            if (aiHeaderTitle) aiHeaderTitle.innerText = translations[window.currentLang].aiHeaderTitle;
+
+            const aiHeaderDesc = document.getElementById('ai-header-desc');
+            if (aiHeaderDesc) aiHeaderDesc.innerText = translations[window.currentLang].aiHeaderDesc;
+
+            const aiBtnText = document.getElementById('ai-btn-text');
+            if (aiBtnText) aiBtnText.innerText = window.aiSessionActive ? translations[window.currentLang].stopAiBtn : translations[window.currentLang].startAiBtn;
+
+            const modalPostTitle = document.getElementById('modal-post-title');
+            if (modalPostTitle) modalPostTitle.innerHTML = `<i class="fa-solid fa-plus-circle text-[var(--theme-500)]"></i><span>${translations[window.currentLang].postModalTitle}</span>`;
+
+            const lblTitle = document.getElementById('lbl-title');
+            if (lblTitle) lblTitle.innerText = translations[window.currentLang].adTitleLabel;
+
+            const adTitle = document.getElementById('ad-title');
+            if (adTitle) adTitle.placeholder = translations[window.currentLang].adTitlePlaceholder;
+
+            const lblCat = document.getElementById('lbl-cat');
+            if (lblCat) lblCat.innerText = translations[window.currentLang].categoryLabel;
+            
+            const catSelect = document.getElementById('ad-category');
+            if (catSelect && catSelect.options.length >= 6) {
+                catSelect.options[0].text = translations[window.currentLang].phoneCat;
+                catSelect.options[1].text = translations[window.currentLang].carCat;
+                catSelect.options[2].text = translations[window.currentLang].constCat;
+                catSelect.options[3].text = translations[window.currentLang].compCat;
+                catSelect.options[4].text = translations[window.currentLang].aiCat;
+                catSelect.options[5].text = translations[window.currentLang].miscCat;
+            }
+
+            const lblPrice = document.getElementById('lbl-price');
+            if (lblPrice) lblPrice.innerText = translations[window.currentLang].priceLabel;
+
+            const lblLoc = document.getElementById('lbl-loc');
+            if (lblLoc) lblLoc.innerText = translations[window.currentLang].locationLabel;
+
+            const adLocation = document.getElementById('ad-location');
+            if (adLocation) adLocation.placeholder = translations[window.currentLang].locationPlaceholder;
+
+            const lblImg = document.getElementById('lbl-img');
+            if (lblImg) lblImg.innerText = translations[window.currentLang].imageLabel;
+
+            const submitAdBtn = document.getElementById('submit-ad-btn');
+            if (submitAdBtn) submitAdBtn.innerText = translations[window.currentLang].submitAdBtn;
+
+            const cityModalTitle = document.getElementById('city-modal-title');
+            if (cityModalTitle) cityModalTitle.innerText = translations[window.currentLang].cityModalTitle;
+
+            const customModalOk = document.getElementById('custom-modal-ok');
+            if (customModalOk) customModalOk.innerText = translations[window.currentLang].okText;
+
+            const authTitle = document.getElementById('auth-modal-title-text');
+            if (authTitle) authTitle.innerText = translations[window.currentLang].authModalTitle;
+
+            const lblUser = document.getElementById('lbl-username');
+            if (lblUser) lblUser.innerText = translations[window.currentLang].usernameLabel;
+
+            const regUser = document.getElementById('reg-username');
+            if (regUser) regUser.placeholder = translations[window.currentLang].usernamePlaceholder;
+
+            const lblEmail = document.getElementById('lbl-email');
+            if (lblEmail) lblEmail.innerText = translations[window.currentLang].emailLabel;
+
+            const regEmail = document.getElementById('reg-email');
+            if (regEmail) regEmail.placeholder = translations[window.currentLang].emailPlaceholder;
+
+            const lblPhone = document.getElementById('lbl-phone');
+            if (lblPhone) lblPhone.innerText = translations[window.currentLang].phoneLabel;
+
+            const regPhone = document.getElementById('reg-phone');
+            if (regPhone) regPhone.placeholder = translations[window.currentLang].phonePlaceholder;
+
+            const authBtn = document.getElementById('auth-submit-btn');
+            if (authBtn) authBtn.innerText = translations[window.currentLang].authBtn;
+
+            const chatTitleEl = document.getElementById('chat-modal-title-text');
+            if (chatTitleEl) chatTitleEl.innerText = translations[window.currentLang].chatTitle;
+            const chatInput = document.getElementById('chat-input');
+            if (chatInput) chatInput.placeholder = translations[window.currentLang].chatPlaceholder;
+            const sendBtn = document.getElementById('chat-send-btn');
+            if (sendBtn) sendBtn.innerText = translations[window.currentLang].sendBtn;
+
+            const dashTitleEl = document.getElementById('dashboard-modal-title-text');
+            if (dashTitleEl) dashTitleEl.innerText = translations[window.currentLang].dashTitle;
+
+            window.renderCategories();
+            window.renderListings(window.listingsData);
+        };
+
+        window.showLocationModal = function() {
+            const cityModal = document.getElementById('city-modal');
+            if (cityModal) cityModal.classList.remove('hidden');
+        };
+
+        window.closeCityModal = function() {
+            const cityModal = document.getElementById('city-modal');
+            if (cityModal) cityModal.classList.add('hidden');
+        };
+
+        window.selectCity = function(city) {
+            const selectedCityEl = document.getElementById('selected-city');
+            if (selectedCityEl) selectedCityEl.innerText = city;
+            window.closeCityModal();
+        };
+
+        window.openPostModal = function() {
+            const postModal = document.getElementById('post-modal');
+            if (postModal) postModal.classList.remove('hidden');
+        };
+
+        window.closePostModal = function() {
+            const postModal = document.getElementById('post-modal');
+            if (postModal) postModal.classList.add('hidden');
+        };
+
+        window.openChatModal = function() {
+            const chatModal = document.getElementById('chat-modal');
+            if (chatModal) {
+                chatModal.classList.remove('hidden');
+                window.renderChatMessages();
+            }
+        };
+
+        window.closeChatModal = function() {
+            const chatModal = document.getElementById('chat-modal');
+            if (chatModal) chatModal.classList.add('hidden');
+        };
+
+        window.openDashboardModal = function() {
+            const dashModal = document.getElementById('dashboard-modal');
+            if (dashModal) {
+                dashModal.classList.remove('hidden');
+                let totalViews = window.listingsData.reduce((acc, item) => acc + (item.views || 500), 0);
+                const totalViewsEl = document.getElementById('stat-total-views');
+                if (totalViewsEl) totalViewsEl.innerText = totalViews.toLocaleString();
+                
+                const activeAdsEl = document.getElementById('stat-active-ads');
+                if (activeAdsEl) activeAdsEl.innerText = window.listingsData.length;
+            }
+        };
+
+        window.closeDashboardModal = function() {
+            const dashModal = document.getElementById('dashboard-modal');
+            if (dashModal) dashModal.classList.add('hidden');
+        };
+
+        window.showFavoritesModal = function() {
+            window.showAlertMessage(window.currentLang === 'tr' ? 'Favoriler' : 'المفضلة', translations[window.currentLang].emptyFav);
+        };
+
+        window.showProfileModal = function() {
+            if (!window.currentUser) {
+                const authModal = document.getElementById('auth-modal');
+                if (authModal) authModal.classList.remove('hidden');
+            } else {
+                window.showAlertMessage(window.currentLang === 'tr' ? 'Hesap Profili' : 'الملف الشخصي', `${window.currentUser.username} (${window.currentUser.email} - ${window.currentUser.phone})\n${translations[window.currentLang].profileDesc}`);
+            }
+        };
+
+        window.closeAuthModal = function() {
+            const authModal = document.getElementById('auth-modal');
+            if (authModal) authModal.classList.add('hidden');
+        };
+
+        window.handleAuth = function(e) {
+            e.preventDefault();
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const phone = document.getElementById('reg-phone').value;
+
+            window.currentUser = { username, email, phone };
+            window.closeAuthModal();
+            window.showAlertMessage(window.currentLang === 'tr' ? 'Giriş Başarılı' : 'تم تسجيل الدخول بنجاح', `${window.currentLang === 'tr' ? 'Hoş geldiniz' : 'أهلاً بك'}, ${username}`);
+        };
+
+        window.showAlertMessage = function(title, text) {
+            const modal = document.getElementById('custom-modal');
+            const titleEl = document.getElementById('custom-modal-title');
+            const textEl = document.getElementById('custom-modal-text');
+            if (modal && titleEl && textEl) {
+                titleEl.innerText = title;
+                textEl.innerText = text;
+                modal.classList.remove('hidden');
+            }
+        };
+
+        window.closeCustomModal = function() {
+            const modal = document.getElementById('custom-modal');
+            if (modal) modal.classList.add('hidden');
+        };
+
+        window.filterCategory = function(cat) {
+            window.currentCategory = cat;
+            window.renderCategories();
+            if (cat === 'all') {
+                window.renderListings(window.listingsData);
+            } else {
+                const filtered = window.listingsData.filter(item => item.category === cat);
+                window.renderListings(filtered);
+            }
+        };
+
+        window.handleSearch = function(e) {
+            const q = e.target.value.toLowerCase();
+            const filtered = window.listingsData.filter(item => 
+                item.title.toLowerCase().includes(q) || 
+                item.location.toLowerCase().includes(q)
+            );
+            window.renderListings(filtered);
+        };
+
+        window.submitNewAd = function(e) {
+            e.preventDefault();
+            const title = document.getElementById('ad-title').value;
+            const category = document.getElementById('ad-category').value;
+            const price = parseFloat(document.getElementById('ad-price').value) || 0;
+            const location = document.getElementById('ad-location').value || 'İstanbul';
+            const image = document.getElementById('ad-image').value || 'https://placehold.co/400x300/0f172a/10b981?text=New+Ad';
+
+            const newId = window.listingsData.length + 1;
+            window.listingsData.unshift({
+                id: newId,
+                title,
+                category,
+                price,
+                location,
+                image,
+                views: 1
+            });
+
+            window.closePostModal();
+            window.renderListings(window.listingsData);
+            window.showAlertMessage(translations[window.currentLang].successTitle, translations[window.currentLang].successText);
+            document.getElementById('post-ad-form').reset();
+        };
+
+        window.toggleAiSession = function() {
+            window.aiSessionActive = !window.aiSessionActive;
+            const btnText = document.getElementById('ai-btn-text');
+            const statusEl = document.getElementById('ai-status');
+            const videoBox = document.getElementById('ai-video-box');
+            
+            if (window.aiSessionActive) {
+                if (btnText) btnText.innerText = translations[window.currentLang].stopAiBtn;
+                if (statusEl) statusEl.innerText = window.currentLang === 'tr' ? 'Yapay Zeka Bağlandı - Canlı Dinleme ve Görme Aktif' : 'متصل بالذكاء الاصطناعي - الاستماع والرؤية نشطان';
+                if (videoBox) videoBox.classList.add('ring-4', 'ring-[var(--theme-500)]');
+            } else {
+                if (btnText) btnText.innerText = translations[window.currentLang].startAiBtn;
+                if (statusEl) statusEl.innerText = translations[window.currentLang].aiStatusReady;
+                if (videoBox) videoBox.classList.remove('ring-4', 'ring-[var(--theme-500)]');
+            }
+        };
+
+        window.switchTab = function(tabId) {
+            document.querySelectorAll('.app-section').forEach(sec => sec.classList.add('hidden'));
+            const target = document.getElementById(tabId);
+            if (target) target.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('text-[var(--theme-500)]'));
+            const activeNav = document.getElementById('nav-btn-' + tabId);
+            if (activeNav) activeNav.classList.add('text-[var(--theme-500)]');
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            window.applyTheme('emerald');
+            window.renderCategories();
+            window.renderListings(window.listingsData);
+        });
+    </script>
+    <style>
+        :root {
+            --theme-500: #10b981;
+            --theme-600: #059669;
+        }
+        body {
+            background-color: #090d16;
+            color: #f3f4f6;
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #090d16; }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #374151; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans select-none antialiased">
+
+    <header class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800 px-4 py-3">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3 rtl:space-x-reverse cursor-pointer" onclick="window.switchTab('home-section')">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[var(--theme-500)] to-teal-400 flex items-center justify-center text-slate-950 font-black text-lg shadow-lg shadow-[var(--theme-500)]/20">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-sm tracking-tight text-white flex items-center gap-1.5">
+                        Face-to-Face AI
+                        <span class="text-[10px] bg-[var(--theme-500)]/10 text-[var(--theme-500)] border border-[var(--theme-500)]/30 px-1.5 py-0.5 rounded-full font-bold">Pro</span>
